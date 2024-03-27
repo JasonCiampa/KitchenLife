@@ -6,18 +6,29 @@ package com.mygdx.game;
  */
 public class TrainingBooth extends InteractableAsset {
     
-    @Override
-    protected void sendInteraction(InteractableAsset recipient, int interactionType) {
-        
+    public TrainingBooth(String gltfFilePath, float x, float y, float z) {
+        super(gltfFilePath, x, y, z);
+        // WORK IN PROGRESS
     }
     
-    @Override
-    protected void recieveInteraction(int interactionType) {
-        
+    public TrainingBooth(String gltfFilePath, float x, float y, float z, String animationName, boolean loopAnimation) {
+        super(gltfFilePath, x, y, z, animationName, loopAnimation);
+        // WORK IN PROGRESS
     }
     
     @Override
     protected boolean processInteractions() {
         return true;
     }
+    
+    @Override
+    protected void sendInteraction(InteractableAsset recipient, int interactionType) {
+        
+    }
+    
+    @Override
+    protected void recieveInteraction(InteractableAsset sender, int interactionType) {
+        
+    }
+    
 }
