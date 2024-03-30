@@ -6,6 +6,6 @@ package com.mygdx.game;
  */
 public interface Updatable {
     public void load();
-    public void update();
+    public void update(float dt);
     public void render();
 }

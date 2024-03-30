@@ -11,14 +11,12 @@ import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-
-import net.mgsx.gltf.scene3d.scene.Scene;
-import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
 {
     // Cameras
+    private Player player;
     private PerspectiveCamera visualCam;                                                                                                        // Controls the visualization of the viewport
     private FirstPersonCameraController moveCam;                                                                                                // Controls the movement around the viewport
     
@@ -27,7 +25,6 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
     private Asset booth;                                                                                                                        // Stores all necessary information about the booth Asset
     private Asset plate;                                                                                                                        // Stores all necessary information about the plate Asset
     private Asset bacon;                                                                                                                        // Stores all necessary information about the bacon Asset
-
     
     // Scene
     private SceneManager sceneManager;                                                                                                          // Manages the Scene and all of its components
@@ -39,23 +36,19 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
     private Texture brdfLUT;                                                                                                                    // Texturing for the Scene
     private DirectionalLightEx light;                                                                                                           // Lighting for the Scene
     
-
     @Override
     public void create() {
 
         // Camera Setup
-        visualCam = new PerspectiveCamera(40f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());         // Create the visual camera and store it in visualCam
-        visualCam.position.set(0,50, 0);                                                                                                   // Set the position of the visualCam to the center
-
-        moveCam = new FirstPersonCameraController(visualCam);                                                                             // Create the move camera and store it in moveCam
-        Gdx.input.setInputProcessor(moveCam);                                                                                                // Set the input processor for our game to be based on the moveCam's input processing methods
+        player = Player.getInstance();
+        Gdx.input.setInputProcessor(player.getCamera());                                                                                                // Set the input processor for our game to be based on the moveCam's input processing methods
         
         
         // Asset Setup
-        cone = new Asset("cone/conemove.gltf", 0, 49, -5, "ConeDog", true);                           // Create the cone asset with the given gltf file, xyz coords, and animation details
-        booth = new Asset("booth/TrainingBooth.gltf", 0, -5, -40);                                                            // Create the booth asset with the given gltf file and xyz coords
+        cone = new Asset("cone/conemove.gltf", 0, 0, -5, "ConeDog", true);                           // Create the cone asset with the given gltf file, xyz coords, and animation details
+        booth = new Asset("booth/TrainingBooth.gltf", 20, 0, 10);                                                            // Create the booth asset with the given gltf file and xyz coords
         plate = new Asset("plate/TrainingBoothPlate.gltf", 0, 0, 0);                                                          // Create the plate asset with the given gltf file and xyz coords
-//        bacon = new Asset("bacon/Bacon.gltf", 0, 0.1f, 0);                                                                       // Create the bacon asset with the given gltf file and xyz coords
+        bacon = new Asset("bacon/bacon.gltf", 0, 0.1f, 0);                                                                       // Create the bacon asset with the given gltf file and xyz coords
 
         
         // Scene Setup
@@ -63,8 +56,8 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
         sceneManager.addScene(cone.getBody());                                                                                            // Add cone to the SceneManager to make it manage the cone
         sceneManager.addScene(booth.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
         sceneManager.addScene(plate.getBody());                                                                                           // Add plate to the SceneManager to make it manage the plate
-//        sceneManager.addScene(bacon.getBody());                                                                                           // Add bacon to the SceneManager to make it manage the bacon
-        sceneManager.setCamera(visualCam);                                                                                                // Set visualCam as sceneManager's camera
+        sceneManager.addScene(bacon.getBody());                                                                                           // Add bacon to the SceneManager to make it manage the bacon
+        sceneManager.setCamera(player.getCamera().getView());                                                                                                // Set visualCam as sceneManager's testCam
                                  
         
         // Light Setup
@@ -100,13 +93,13 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
         // DeltaTime
         float dt = Gdx.graphics.getDeltaTime();                                                                                                 // Get the amount of time that has passed since the last call to render and store it in dt
 
-        // Camera Rendering & Updating
-        moveCam.update(dt);                                                                                                            // Update the moveCam so that movement input from user can be processed
-
         // Scene Rendering & Updating
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);                                                                    // Clear and redraw the bits on the screen?
         sceneManager.update(dt);                                                                                                          // Update the Scene with dt                                                                                  
         sceneManager.render();                                                                                                                  // Render the Scene
+        
+        // Camera Rendering & Updating
+        player.update(dt);                                                                                                      // Update the moveCam so that movement input from user can be processed
     }
 
     @Override

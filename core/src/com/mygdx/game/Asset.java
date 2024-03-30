@@ -11,39 +11,62 @@ import net.mgsx.gltf.scene3d.scene.SceneAsset;
  */
 public class Asset {
     
-    // Asset Position, Speed, and Dimensions
-    float x;
-    float y;
-    float z;
+    // FIELDS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    float dx;
-    float dy;
-    float dz;
+    // Position
+    protected float x;
+    protected float y;
+    protected float z;
     
-    float length, width, height;
+    // Speed
+    protected float dx;
+    protected float dy;
+    protected float dz;
     
-    private SceneAsset gltfFile;
-    private Scene body;
-   
+    // 3D Model / Skin
+    protected SceneAsset gltfFile;
+    protected Scene body;
     
-    public Asset(String gltfFilePath, float x, float y, float z) {
-        this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
-        this.body = new Scene(gltfFile.scene);
-        
+    
+    // CONSTRUCTORS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    // Creates an Asset without a 3D Model / Skin
+    public Asset(float x, float y, float z) {
         this.setLocation(x, y, z);
     }
+    
+    // Creates an Asset with a 3D Model / Skin
+    public Asset(String gltfFilePath, float x, float y, float z) {
+        this.setLocation(x, y, z);
 
+        this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
+        this.body = new Scene(gltfFile.scene);
+    }
+
+    // Creates an Asset with a 3D Model / Skin and a default Animation
     public Asset(String gltfFilePath, float x, float y, float z, String animationName, boolean loopAnimation) {
+        this.setLocation(x, y, z);
+
         this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
         this.body = new Scene(gltfFile.scene);
         
-        this.setLocation(x, y, z);
         this.setAnimation(animationName, loopAnimation);
     }
     
     
+    // METHODS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    // Disposes the gltfFile for garbage collection
+    public void dispose() {
+        this.gltfFile.dispose();
+    }
+    
+    
+    // Setters
+    
+    // Sets the Asset's current animation
     public void setAnimation(String animationName, boolean loopAnimation) {
-        if (loopAnimation) {                                                                                     // Set the animation for the coneModel and set it to loop
+        if (loopAnimation) {                                                                                     
             body.animationController.setAnimation(animationName, -1);
         }
         else {
@@ -51,31 +74,27 @@ public class Asset {
         }
     }
     
+    // Sets the Asset's location
     public void setLocation(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
         
-        // In this transform Matrix4, the x, y, and z position coords are stored in val at indexes 12, 13, and 14 respectively     
-        body.modelInstance.transform.val[12] = this.x;
-        body.modelInstance.transform.val[13] = this.y;
-        body.modelInstance.transform.val[14] = this.z;
+        if (this.body != null) {
+            // In this transform Matrix4, the x, y, and z position coords are stored in val at indexes 12, 13, and 14 respectively     
+            body.modelInstance.transform.val[12] = this.x;
+            body.modelInstance.transform.val[13] = this.y;
+            body.modelInstance.transform.val[14] = this.z;
+        }
     }
+    
+    
+    // Getters
     
     public Scene getBody() {
         return this.body;
     }
     
-    public void dispose() {
-        this.gltfFile.dispose();
-    }
     
-//    public Asset(String gltfFilePath, float x, float y, float z, ArrayList<Animation> animations) {
-//        this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
-//        this.body = new Scene(gltfFile.scene);
-//        
-//        this.x = x;
-//        this.y = y;
-//        this.z = z;
-//    }
+    // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

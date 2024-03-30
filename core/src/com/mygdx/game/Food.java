@@ -22,7 +22,7 @@ public class Food extends Asset implements Updatable {
     }
     
     @Override
-    public void update() {
+    public void update(float dt) {
         
     }
     
