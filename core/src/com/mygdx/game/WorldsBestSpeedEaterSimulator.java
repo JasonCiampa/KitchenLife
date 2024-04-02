@@ -2,6 +2,7 @@ package com.mygdx.game;
                                                                                                                                                                                                         
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 
@@ -19,6 +20,10 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
     private Player player;
     private PerspectiveCamera visualCam;                                                                                                        // Controls the visualization of the viewport
     private FirstPersonCameraController moveCam;                                                                                                // Controls the movement around the viewport
+    
+    // Scenes
+    private Restaurant restaurant;
+    private Booth boothTest;
     
     // Assets
     private Asset cone;                                                                                                                         // Stores all necessary information about the cone Asset
@@ -43,6 +48,7 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
         player = Player.getInstance();
         Gdx.input.setInputProcessor(player.getCamera());                                                                                                // Set the input processor for our game to be based on the moveCam's input processing methods
         
+        boothTest = new Booth();
         
         // Asset Setup
         cone = new Asset("cone/conemove.gltf", 0, 0, -5, "ConeDog", true);                           // Create the cone asset with the given gltf file, xyz coords, and animation details
@@ -100,6 +106,14 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
         
         // Camera Rendering & Updating
         player.update(dt);                                                                                                      // Update the moveCam so that movement input from user can be processed
+    
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+            boothTest.receiveInteraction(boothTest, 1);
+        }
+        
+        System.out.println("Player X: " + player.getX());
+        System.out.println("Player Y: " + player.getY());
+        System.out.println("Player Z: " + player.getZ() + "\n\n");
     }
 
     @Override

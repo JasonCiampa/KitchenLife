@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
  * @author Jason Ciampa
  */
 
-// WORKING ON MY OWN SUBCLASS OF A LIBGDX CAMERA, BUT I AM STRUGGLING!
 public class FirstPersonCamera extends FirstPersonCameraController {
     private int speed;
     private Camera view;
@@ -17,6 +16,9 @@ public class FirstPersonCamera extends FirstPersonCameraController {
         super(camera);
         this.speed = speed;
         this.view = camera;
+        
+        this.camera.far = 500;
+        this.camera.near = 1;
         
         this.view.position.x = x;
         this.view.position.y = y;

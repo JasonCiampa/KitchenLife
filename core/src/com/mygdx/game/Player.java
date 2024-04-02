@@ -36,7 +36,7 @@ public class Player implements Interactable, Updatable {
     // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     private Player() {
-        this.camera = new FirstPersonCamera(100, 0, 25, 0, new PerspectiveCamera(40f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        this.camera = new FirstPersonCamera(20, 0, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         
         this.x = this.camera.getView().position.x;
         this.y = this.camera.getView().position.y;
@@ -55,12 +55,23 @@ public class Player implements Interactable, Updatable {
         // This code will check the player's distance from other interactable objects
         // When close enough, code will check if player presses interact button 'e'
         // If 'e' pressed, interaction is sent from player to that interactable object (player.sendInteraction(recipient, keyPress))
+        
+        ArrayList<Interactable> booths = Restaurant.getInstance().getBooths();
+        
+//        for (Interactable booth : booths) {
+//            if (booth is close enough to player) {
+//                if ('e' key is being pressed) {
+//                    sendInteraction(booth, eWasPressed);
+//                }
+//            }
+//        }
     }
     
     @Override
     // Sends an interaction to another Interactable object
     public void sendInteraction(Interactable recipient, int interactionType) {
         // This code will send the interaction to the recipient by calling recipient.recieveInteraction(player, keyPress)
+        recipient.receiveInteraction(this, interactionType);
     }
     
     @Override
@@ -137,6 +148,8 @@ public class Player implements Interactable, Updatable {
         this.z = this.camera.getView().position.z;
         
         this.setLocation(this.x, this.y, this.z);
+        
+        this.processInteractions();
 
     }
     
