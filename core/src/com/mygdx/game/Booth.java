@@ -4,10 +4,16 @@ package com.mygdx.game;
  *
  * @author Jason Ciampa
  */
-public class Booth implements Interactable {
+public class Booth extends Asset implements Interactable {
 
-    public Booth() {
+    public Booth(float x, float y, float z) {
+      super("booth/TrainingBooth.gltf", x, y, z);
+        
+      this.x = 41;
+      this.y = 27.6f;
+      this.z = 15.6f;
       
+      // RYANS NUMBER: 48.758
     }
     
     @Override
@@ -29,6 +35,8 @@ public class Booth implements Interactable {
         Player player = Player.getInstance();
         player.setLocation(-13, 17, 8.5f);
         player.getCamera().getView().lookAt(15.64f, 18, 9);
+        
+        
     }
     
 }
