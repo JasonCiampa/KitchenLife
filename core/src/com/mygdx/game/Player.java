@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import java.util.ArrayList;
 
@@ -17,6 +18,8 @@ public class Player implements Interactable, Updatable {
     // Game Variables
     private int eatingSpeed;
     private int eatingReputation;
+    private int bonusBites;
+    private boolean eating;
     
     // Position
     private float x;
@@ -36,7 +39,7 @@ public class Player implements Interactable, Updatable {
     // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     private Player() {
-        this.camera = new FirstPersonCamera(20, 0, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        this.camera = new FirstPersonCamera(20, 10, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         
         this.x = this.camera.getView().position.x;
         this.y = this.camera.getView().position.y;
@@ -45,6 +48,26 @@ public class Player implements Interactable, Updatable {
     
     
     // METHODS // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    public void sitDown(float x, float y, float z, float lookX, float lookZ) {
+        this.setLocation(x, y, z);
+        this.camera.getView().lookAt(lookX, this.y, lookZ);
+    }
+    
+    public void eat() {
+        // Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter). If so, increment bonus bites. Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+            this.bonusBites += 1;
+        }
+    }
+    
+    public void increaseEatingSpeed(int eatingSpeedGained) {
+        this.eatingSpeed += eatingSpeedGained;
+    }
+    
+    public void increaseEatingReputation(int eatingReputationGained) {
+        this.eatingReputation += eatingReputationGained;
+    }
     
     // Interactable Methods
     
@@ -85,6 +108,7 @@ public class Player implements Interactable, Updatable {
     
     // Getters
     
+    
     // Returns the Player's x-coordinate
     public float getX() {
         return this.x;
@@ -101,8 +125,21 @@ public class Player implements Interactable, Updatable {
     }
     
     // Returns the Player's moveSpeed
-    public float getSpeed() {
+    public float getMoveSpeed() {
         return this.moveSpeed;
+    }
+    
+    // Returns the Player's moveSpeed
+    public float getEatingSpeed() {
+        return this.eatingSpeed;
+    }
+    
+    public int getEatingReputation() {
+        return this.eatingReputation;
+    }
+    
+    public int getBonusBites() {
+        return this.bonusBites * (int)(this.eatingSpeed * 0.1d);    // Not sure if this math will make it balanced in-game, but we'll test and adjust
     }
     
     // Returns the Player's camera
@@ -131,6 +168,10 @@ public class Player implements Interactable, Updatable {
         this.camera.getView().position.set(this.x, this.y, this.z);
     }
     
+    public void setEating(boolean eating) {
+        this.eating = eating;
+    }
+    
     // UPDATABLES
     
     // Executes when the Player is loaded into the game for the first time
@@ -151,6 +192,9 @@ public class Player implements Interactable, Updatable {
         
         this.processInteractions();
 
+        if (this.eating) {
+            this.eat();
+        }
     }
     
     // Executes every frame
