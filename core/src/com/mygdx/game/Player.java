@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * @author Jason Ciampa
  */
 
-// PLANNING TO UTILIZE THE SINGLETON DESIGN PATTERN HERE, CONSTRUCTORS BELOW ARE TEMPORARY
 public class Player implements Interactable, Updatable {
     
     // FIELDS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -55,10 +54,20 @@ public class Player implements Interactable, Updatable {
     }
     
     public void eat() {
-        // Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter). If so, increment bonus bites. Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            this.bonusBites += 1;
+        // Check if the KeySpawner is actively spawning Keys
+        if (KeySpawner.isActive()) {
+            // Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter). If so, increment bonus bites. Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
+            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+                this.bonusBites += 1;
+            }
         }
+        else {
+//            if (mouse is clicked) {
+//                this.bonusBites += 1;
+//            } 
+        }
+        
+        // Handle eating animation updates here possibly?
     }
     
     public void increaseEatingSpeed(int eatingSpeedGained) {
@@ -139,7 +148,9 @@ public class Player implements Interactable, Updatable {
     }
     
     public int getBonusBites() {
-        return this.bonusBites * (int)(this.eatingSpeed * 0.1d);    // Not sure if this math will make it balanced in-game, but we'll test and adjust
+        int bonusBites = this.bonusBites;                   // Store the number of bonus bites in a variable
+        this.bonusBites = 0;                                // Reset the Player's count of bonusBites since these current bonus bites are being registered
+        return bonusBites;                                  // Return the number of bonus bites that the Player had before the reset
     }
     
     // Returns the Player's camera
@@ -171,6 +182,7 @@ public class Player implements Interactable, Updatable {
     public void setEating(boolean eating) {
         this.eating = eating;
     }
+   
     
     // UPDATABLES
     

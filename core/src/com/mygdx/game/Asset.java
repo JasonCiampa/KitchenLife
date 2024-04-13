@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
+import java.lang.Math;
 
 /**
  *
@@ -14,14 +15,19 @@ public class Asset {
     // FIELDS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Position
-    protected float x;
     protected float y;
+    protected float x;
     protected float z;
     
     // Speed
     protected float dx;
     protected float dy;
     protected float dz;
+    
+    // Dimensions
+    protected float length;     // x-coordinate in blender
+    protected float width;      // z-coordinate in blender
+    protected float height;     // y-coordinate in blender
     
     // 3D Model / Skin
     protected SceneAsset gltfFile;
@@ -31,12 +37,12 @@ public class Asset {
     // CONSTRUCTORS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Creates an Asset without a 3D Model / Skin
-    public Asset(float x, float y, float z) {
+    public Asset(float x, float y, float z, float length, float width, float height) {
         this.setLocation(x, y, z);
     }
     
     // Creates an Asset with a 3D Model / Skin
-    public Asset(String gltfFilePath, float x, float y, float z) {
+    public Asset(String gltfFilePath, float x, float y, float z, float length, float width, float height) {
         this.setLocation(x, y, z);
 
         this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
@@ -44,7 +50,7 @@ public class Asset {
     }
 
     // Creates an Asset with a 3D Model / Skin and a default Animation
-    public Asset(String gltfFilePath, float x, float y, float z, String animationName, boolean loopAnimation) {
+    public Asset(String gltfFilePath, float x, float y, float z, float length, float width, float height, String animationName, boolean loopAnimation) {
         this.setLocation(x, y, z);
 
         this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));
@@ -93,6 +99,23 @@ public class Asset {
     
     public Scene getBody() {
         return this.body;
+    }
+    
+    public float getX() {
+        return this.x;
+    }
+    
+    public float getY() {
+        return this.y;
+    }
+
+    public float getZ() {
+        return this.z;
+    }
+    
+    // Calculates and returns the distance from this Asset to another given Asset
+    public float getDistance(float x, float y, float z) {
+        return (float) Math.sqrt(Math.pow((this.x - x), 2) + Math.pow((this.y - y), 2) + Math.pow((this.z - z), 2));           // 3D Space Distance Between Two Points Formula: https://www.youtube.com/watch?v=0c6cP2zLC2c
     }
     
     

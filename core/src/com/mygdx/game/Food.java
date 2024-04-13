@@ -8,12 +8,12 @@ public class Food extends Asset implements Updatable {
     
     // UPDATABLES
     
-    public Food(String gltfFilePath, float x, float y, float z) {
-        super(gltfFilePath, x, y, z);
+    public Food(String gltfFilePath, float x, float y, float z, float length, float width, float height) {
+        super(gltfFilePath, x, y, z, length, width, height);
     }
     
-    public Food(String gltfFilePath, float x, float y, float z, String animationName, boolean loopAnimation) {
-        super(gltfFilePath, x, y, z, animationName, loopAnimation);
+    public Food(String gltfFilePath, float x, float y, float length, float width, float height, float z, String animationName, boolean loopAnimation) {
+        super(gltfFilePath, x, y, z, length, width, height, animationName, loopAnimation);
     }
     
     @Override

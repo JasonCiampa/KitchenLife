@@ -16,10 +16,14 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
 {
-    // Cameras
+    // Player
     private Player player;
-    private PerspectiveCamera visualCam;                                                                                                        // Controls the visualization of the viewport
-    private FirstPersonCameraController moveCam;                                                                                                // Controls the movement around the viewport
+    
+    // 2D Camera
+    private OrthographicCamera camera2D;
+    
+    // Drawer
+    private Drawer drawer;
     
     // Scenes
 //    private Restaurant restaurant;
@@ -45,22 +49,29 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
     @Override
     public void create() {
 
-        // Camera Setup
+        // Player Setup
         player = Player.getInstance();
         Gdx.input.setInputProcessor(player.getCamera());                                                                                                // Set the input processor for our game to be based on the moveCam's input processing methods
         
-        boothTest = new Booth(41, 27.6f, 15.6f);
+        // 2D Camera Setup
+        camera2D = new OrthographicCamera();                                                                                                // Creates a new 2D Camera
+        camera2D.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());                       // Camera sets the viewport to 1080p
+        
+        // Drawer Setup
+        drawer = Drawer.getInstance();
+        
+        boothTest = new TrainingBooth(41, 27.6f, 15.6f, 20);
         
         // Asset Setup
-        cone = new Asset("cone/conemove.gltf", 0, 0, -5, "ConeDog", true);                           // Create the cone asset with the given gltf file, xyz coords, and animation details
-        booth = new Asset("booth/TrainingBooth.gltf", 20, 0, 10);                                                            // Create the booth asset with the given gltf file and xyz coords
-        plate = new Asset("plate/TrainingBoothPlate.gltf", 0, 0, 0);                                                          // Create the plate asset with the given gltf file and xyz coords
-        bacon = new Asset("bacon/bacon.gltf", 0, 0.1f, 0);                                                                       // Create the bacon asset with the given gltf file and xyz coords
-        restaurant = new Asset("resturantWalls/resturant.gltf", 0, 0, 0);
+//        cone = new Asset("cone/conemove.gltf", 0, 0, -5, "ConeDog", true);                           // Create the cone asset with the given gltf file, xyz coords, and animation details
+        booth = new Asset("booth/TrainingBooth.gltf", 20, 0, 10, 41, 15.6f, 27.6f);                                                            // Create the booth asset with the given gltf file and xyz coords
+        plate = new Asset("plate/TrainingBoothPlate.gltf", 0, 0, 0, 3.96f, 0.15f, 3.84f);                                                          // Create the plate asset with the given gltf file and xyz coords
+        bacon = new Asset("bacon/bacon.gltf", 0, 0.1f, 0, 1.74f, 0.274f, 2.21f);                                                                       // Create the bacon asset with the given gltf file and xyz coords
+        restaurant = new Asset("resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);
         
         // Scene Setup
         sceneManager = new SceneManager();                                                                                                      // Create the SceneManager
-        sceneManager.addScene(cone.getBody());                                                                                            // Add cone to the SceneManager to make it manage the cone
+//        sceneManager.addScene(cone.getBody());                                                                                            // Add cone to the SceneManager to make it manage the cone
         sceneManager.addScene(boothTest.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
         sceneManager.addScene(plate.getBody());                                                                                           // Add plate to the SceneManager to make it manage the plate
         sceneManager.addScene(bacon.getBody());                                                                                           // Add bacon to the SceneManager to make it manage the bacon
@@ -106,9 +117,17 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter
         sceneManager.update(dt);                                                                                                          // Update the Scene with dt                                                                                  
         sceneManager.render();                                                                                                                  // Render the Scene
         
-        // Camera Rendering & Updating
         player.update(dt);                                                                                                      // Update the moveCam so that movement input from user can be processed
-    
+
+        // Camera Rendering & Updating
+        camera2D.update();                                                                                                      // Updates the 2D camera once every frame
+        
+        // Drawer
+        drawer.getBatch().setProjectionMatrix(camera2D.combined);
+        drawer.getBatch().begin();
+        drawer.drawPlayerInfo();
+        drawer.getBatch().end();
+
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
             boothTest.receiveInteraction(boothTest, 1);
         }
