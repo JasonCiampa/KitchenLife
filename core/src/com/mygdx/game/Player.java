@@ -9,114 +9,102 @@ import java.util.ArrayList;
  *
  * @author Jason Ciampa
  */
-
 public class Player implements Interactable, Updatable {
     
-    // FIELDS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // FIELDS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Game Variables
-    private int eatingSpeed;
-    private int eatingReputation;
-    private int bonusBites;
-    private boolean eating;
+    private int eatingSpeed;                                                                                                                                                                   // How many bites per second the Player can eat
+    private int eatingReputation;                                                                                                                                                              // How skilled of a Professional Food Eater the Player is
+    private int bonusBites;                                                                                                                                                                    // How many bonus bites the Player has currently
+    private boolean eating;                                                                                                                                                                    // Whether or not the Player is currently eating
     
     // Position
-    private float x;
-    private float y;
-    private float z;
+    private float x;                                                                                                                                                                           // The x-coordinate of the Player
+    private float y;                                                                                                                                                                           // The y-coordinate of the Player
+    private float z;                                                                                                                                                                           // The z-coordinate of the Player
     
     // Speed
-    private float moveSpeed;
+    private float moveSpeed;                                                                                                                                                                   // The move speed of the Player
     
     // Camera
-    private FirstPersonCamera camera;
+    private FirstPersonCamera camera;                                                                                                                                                          // The camera of the Player
     
     // Instance
-    private static Player instance;
+    private static Player instance;                                                                                                                                                            // The one Singleton instance of the Player
 
     
-    // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     private Player() {
-        this.camera = new FirstPersonCamera(20, 10, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        this.camera = new FirstPersonCamera(20, 10, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));    // Create and store the Player's camera
         
-        this.x = this.camera.getView().position.x;
-        this.y = this.camera.getView().position.y;
-        this.z = this.camera.getView().position.z;
+        Gdx.input.setInputProcessor(this.camera);                                                                                                                                           // Set the input processor for our game to be based on the Player's camera
+
+        this.x = this.camera.getView().position.x;                                                                                                                                             // Store the x-coordinate of the Player
+        this.y = this.camera.getView().position.y;                                                                                                                                             // Store the y-coordinate of the Player     
+        this.z = this.camera.getView().position.z;                                                                                                                                             // Store the z-coordinate of the Player
     }
     
     
-    // METHODS // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    public void sitDown(float x, float y, float z, float lookX, float lookZ) {
-        this.setLocation(x, y, z);
-        this.camera.getView().lookAt(lookX, this.y, lookZ);
+    // Sits the Player 
+    public void sitDown(float x, float z, float lookX, float lookZ) {
+        this.setLocation(x, 17, z);                                                                                                                                                          // Set the location of the Player to x, 17, z (17 is the seated height)
+        this.camera.getView().lookAt(lookX, this.y, lookZ);                                                                                                                              // Make the Player look straight ahead in a given direction
     }
     
+    // Handles the Player's input while in an eating situation
     public void eat() {
         // Check if the KeySpawner is actively spawning Keys
-        if (KeySpawner.isActive()) {
-            // Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter). If so, increment bonus bites. Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
-            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-                this.bonusBites += 1;
-            }
-        }
-        else {
+//        if (KeySpawner.isActive()) {
+            // Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter).
+            // If so, increment bonus bites. 
+            // Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
+            
+//            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+//                this.bonusBites += 1;
+//            }
+//        }
+//        else {
 //            if (mouse is clicked) {
 //                this.bonusBites += 1;
 //            } 
-        }
+//        }
         
         // Handle eating animation updates here possibly?
     }
     
+    // Increases the eating speed of the Player
     public void increaseEatingSpeed(int eatingSpeedGained) {
-        this.eatingSpeed += eatingSpeedGained;
+        this.eatingSpeed += eatingSpeedGained;                                                                                                                                               // Increases the eating speed of the Player
+    }
+
+    // Increases the eating reputation of the Player
+    public void increaseEatingReputation(int eatingReputationGained) {
+        this.eatingReputation += eatingReputationGained;                                                                                                                                     // Increases the eating reputation of the Player
     }
     
-    public void increaseEatingReputation(int eatingReputationGained) {
-        this.eatingReputation += eatingReputationGained;
+    public int applyBonusBites() {
+        int bonusBites = this.bonusBites;                                                                                                                                                    // Store the number of bonus bites in a variable
+        this.bonusBites = 0;                                                                                                                                                                 // Reset the Player's count of bonusBites since these current bonus bites are being registered
+        return bonusBites;                                                                                                                                                                   // Return the number of bonus bites that the Player had before the reset
     }
     
     // Interactable Methods
     
-    // Checks proximity to other Interactable objects and detects key presses to send interactions
+    @Override
+    public void detectInteractions() {
 
-    @Override
-    public void processInteractions() {
-        // This code will check the player's distance from other interactable objects
-        // When close enough, code will check if player presses interact button 'e'
-        // If 'e' pressed, interaction is sent from player to that interactable object (player.sendInteraction(recipient, keyPress))
-        
-        ArrayList<Interactable> booths = Restaurant.getInstance().getBooths();
-        
-//        for (Interactable booth : booths) {
-//            if (booth is close enough to player) {
-//                if ('e' key is being pressed) {
-//                    sendInteraction(booth, eWasPressed);
-//                }
-//            }
-//        }
     }
     
     @Override
-    // Sends an interaction to another Interactable object
-    public void sendInteraction(Interactable recipient, int interactionType) {
-        // This code will send the interaction to the recipient by calling recipient.recieveInteraction(player, keyPress)
-        recipient.receiveInteraction(this, interactionType);
-    }
-    
-    @Override
-    // Handles an interaction request from another Interactable object
-    public void receiveInteraction(Interactable sender, int interactionType) {
-        // This code will only be run after an iteraction is sent
-        // The code will be manually defined to handle a specific type of interaction
-        // For example, when the player interacts with a booth
-        // The booth's receiveInteraction code will move the player so they are sitting in the booth and will start the eating
+    public void processInteraction(Interactable sender, int interactionType) {
+
     }
     
     // Getters
-    
     
     // Returns the Player's x-coordinate
     public float getX() {
@@ -143,15 +131,11 @@ public class Player implements Interactable, Updatable {
         return this.eatingSpeed;
     }
     
+    // Returns the Player's eating reputation
     public int getEatingReputation() {
         return this.eatingReputation;
     }
     
-    public int getBonusBites() {
-        int bonusBites = this.bonusBites;                   // Store the number of bonus bites in a variable
-        this.bonusBites = 0;                                // Reset the Player's count of bonusBites since these current bonus bites are being registered
-        return bonusBites;                                  // Return the number of bonus bites that the Player had before the reset
-    }
     
     // Returns the Player's camera
     public FirstPersonCamera getCamera() {
@@ -186,26 +170,18 @@ public class Player implements Interactable, Updatable {
     
     // UPDATABLES
     
-    // Executes when the Player is loaded into the game for the first time
-    @Override
-    public void load() {
-        
-    }
-    
     // Executes every frame
     @Override
     public void update(float dt) {
-        this.camera.update(dt);
+        this.camera.update(dt);                                                                                                                                                              // Updates the Player's camera
         
-        this.x = this.camera.getView().position.x;
-        this.z = this.camera.getView().position.z;
-        
-        this.setLocation(this.x, this.y, this.z);
-        
-        this.processInteractions();
-
-        if (this.eating) {
-            this.eat();
+        if (this.eating) {                                                                                                                                                                            // If the Player is currently eating...                                                                                                                                                                     
+            this.eat();                                                                                                                                                                                   // Process the Player's eating
+        }
+        else {                                                                                                                                                                                         // Otherwise, the Player could be moving around, so...
+            this.x = this.camera.getView().position.x;                                                                                                                                                    // Update the Player's x-coordinate
+            this.z = this.camera.getView().position.z;                                                                                                                                                    // Update the Player's z-coordinate
+            this.setLocation(this.x, this.y, this.z);                                                                                                                                               // Set the Player's location to x, y, z    
         }
     }
     
@@ -216,5 +192,5 @@ public class Player implements Interactable, Updatable {
     }
     
     
-    // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

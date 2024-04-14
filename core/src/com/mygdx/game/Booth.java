@@ -9,76 +9,86 @@ import com.badlogic.gdx.Input;
  */
 public abstract class Booth extends Asset implements Interactable, Updatable {
 
-    // FIELDS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // FIELDS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    protected int speedReward;                                                                                  // How much eating speed to award the Player            (measured in bites per second)
-    protected boolean eatingRunOccurring;                                                                       // Whether or not an eating run is occurring
-    protected double oneSecondTimer;                                                                            // A timer used to count each second
+    protected int speedReward;                                                                                                                      // How much eating speed to award the Player (measured in bites per second)
+    protected boolean eatingRunOccurring;                                                                                                           // Whether or not an eating run is occurring
+    protected double oneSecondTimer;                                                                                                                // A timer used to count each second
     
-    // CONSTRUCTORS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     public Booth(float x, float y, float z, int speedReward) {
-      super("booth/TrainingBooth.gltf", x, y, z, 41, 15.6f, 27.6f);               // Calls the Asset constructor to create the Booth
-      this.speedReward = speedReward;                                                                           // Stores the speedReward for the Booth
-      this.eatingRunOccurring = false;                                                                          // Sets eatingRunOccurring to false
-      this.oneSecondTimer = 1;                                                                                  // Sets the oneSecondTimer to one second
+      super("models/booth/TrainingBooth.gltf", x, y, z, 41, 15.6f, 27.6f);                                            // Calls the Asset constructor to create the Booth
+      this.speedReward = speedReward;                                                                                                               // Stores the speedReward for the Booth
+      this.eatingRunOccurring = false;                                                                                                              // Sets eatingRunOccurring to false
+      this.oneSecondTimer = 1;                                                                                                                      // Sets the oneSecondTimer to one second
     }
     
-    // METHODS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // METHODS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    protected abstract void startEatingRun();
+    // Abstract Eating Run Methods
     
-    protected abstract void processEatingRun(float dt);
+    protected abstract void startEatingRun();                                                                                                       // Method used to handle the beginning of an eating run
     
-    protected abstract void endEatingRun(boolean playerWon);
+    protected abstract void processEatingRun(float dt);                                                                                             // Method used to process the events occurring during the eating run
+    
+    protected abstract void endEatingRun(boolean playerWon);                                                                                        // Method used to handle the ending of an eating run
        
     
     // Interactable Methods
     
     @Override
-    public void processInteractions() {
-        Player player = Player.getInstance();
-        Drawer drawer = Drawer.getInstance();
+    public void detectInteractions() {
+        Player player = Player.getInstance();                                                                                                       // Store a local reference to the Player 
+        Drawer drawer = Drawer.getInstance();                                                                                                       // Store a local reference to the Drawer 
         
-        if (this.getDistance(player.getX(), player.getY(), player.getZ()) < 10) {
-//            drawer.draw()                                                                                 // Draw text/image on screen for user that says "Press 'E' to Sit"
-            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-                this.receiveInteraction(player, 1);
+        float dt = Gdx.graphics.getDeltaTime();                                                                                                     // Get the amount of time that has passed since the last call to render and store it in dt
+        float distanceFromPlayer = this.getDistance(player.getX(), player.getY(), player.getZ());                                             // Calculate the distance from this booth to the Player
+        
+        if (this.oneSecondTimer > 0) {                                                                                                              // If the one second timer is still going...
+            this.oneSecondTimer -= dt;                                                                                                                  // Decrement the timer by dt
+        }
+        else {
+            this.oneSecondTimer = 1;                                                                                                                // Reset the one second timer to one second
+
+            // DEBUG
+            System.out.println("\n\nDistance From Booth to Player: " + distanceFromPlayer);
+            System.out.println("Player Coords: X: " + player.getX() + ",   Y: " + player.getY() + ",   Z: " + player.getZ());
+            System.out.println("Booth Coords: X: " + this.x + ",   Y: " + this.y + ",   Z: " + this.z);
+        }
+
+        
+        if (distanceFromPlayer < 10) {                                                                                                              // If the Player is 10 units away from the booth...
+            drawer.displayMessage("Press 'E' to sit down", 250, 100, 1420, 200, 0.1f);          // Display a message to the Player saying they can press 'e' to sit down
+            
+            if (Gdx.input.isKeyPressed(Input.Keys.E)) {                                                                                             // If the 'e' key is pressed...
+                this.processInteraction(player, 1);                                                                                   // Trigger the Player's interaction on the Booth
             }
         }
     }
 
-    @Override
-    public void sendInteraction(Interactable recipient, int interactionType) {
-        // The booth does not send interactions
-    }
 
     @Override
-    public void receiveInteraction(Interactable sender, int interactionType) {
-        Player player = Player.getInstance();
-        player.setLocation(-13, 17, 8.5f);
-        player.getCamera().getView().lookAt(15.64f, 17, 9);
-        player.setEating(true);
-        this.startEatingRun();
+    public void processInteraction(Interactable sender, int interactionType) {
+        Player player = Player.getInstance();                                                                                                       // Store a local reference to the Player 
+        player.setEating(true);                                                                                                               // Trigger the Player's eating state
+        player.sitDown(-13, 8.5f, 15.64f, 9f);                                                                                      // Set the Player to be seated in the Booth facing forward
+        this.startEatingRun();                                                                                                                      // Trigger the start of the eating run
     }
+    
     
     // Updatable Methods
     
     @Override
-    public void load() {
-        
-    }
-    
-    @Override
     public void update(float dt) {
-        if (this.eatingRunOccurring) {
-            this.processEatingRun(dt);
+        if (this.eatingRunOccurring) {                                                                                                              // If an eating run is occurring...
+            this.processEatingRun(dt);                                                                                                                  // Process the eating run
         }
-        else {
-            this.processInteractions();
+        else {                                                                                                                                      // Otherwise, no eating run is occurring, so...
+            this.detectInteractions();                                                                                                                 // Process interactions that may start a new eating run
         }
     }
-    
+   
     @Override
     public void render() {
         
@@ -89,4 +99,6 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
     public int getSpeedReward() {
         return this.speedReward;
     }
+    
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

@@ -2,8 +2,8 @@ package com.mygdx.game;
 
 /**
  *
- * @author Bukie
+ * @author Jason Ciampa
  */
 public enum InteractionType {
-    
+    MouseClick, PressedE
 }
