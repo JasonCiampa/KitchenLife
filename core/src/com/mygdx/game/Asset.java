@@ -32,30 +32,30 @@ public class Asset {
     // CONSTRUCTORS // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Creates an Asset without a 3D Model / Skin
-    public Asset(float x, float y, float z, float length, float width, float height) {
-        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
-        
+    public Asset(float x, float y, float z, float length, float width, float height) {        
         this.length = length;                                                                                                                                   // Store the length of the Asset
         this.width = width;                                                                                                                                     // Store the width of the Asset
         this.height = height;                                                                                                                                   // Store the height of the Asset
+        
+        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
     }
     
     // Creates an Asset with a 3D Model / Skin
     public Asset(String gltfFilePath, float x, float y, float z, float length, float width, float height) {
-        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
-
         this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));                                                                    // Load and store the gltf file of the Asset
         this.body = new Scene(gltfFile.scene);                                                                                                        // Store the Model of the Asset
+        
+        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
     }
 
     // Creates an Asset with a 3D Model / Skin and a default Animation
     public Asset(String gltfFilePath, float x, float y, float z, float length, float width, float height, String animationName, boolean loopAnimation) {
-        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
-
         this.gltfFile = new GLTFLoader().load(Gdx.files.internal(gltfFilePath));                                                                    // Load and store the gltf file of the Asset
         this.body = new Scene(gltfFile.scene);                                                                                                        // Store the Model of the Asset
         
-        this.setAnimation(animationName, loopAnimation);                                                                                                        // Set the animation of the Asset to the given animation                                                                                
+        this.setAnimation(animationName, loopAnimation);                                                                                                        // Set the animation of the Asset to the given animation   
+        
+        this.setLocation(x, y, z);                                                                                                                              // Set the location of the Asset to the given x, y, z coordinates
     }
     
     

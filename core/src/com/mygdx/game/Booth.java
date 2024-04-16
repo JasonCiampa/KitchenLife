@@ -18,7 +18,7 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
     // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     public Booth(float x, float y, float z, int speedReward) {
-      super("models/booth/TrainingBooth.gltf", x, y, z, 41, 15.6f, 27.6f);                                            // Calls the Asset constructor to create the Booth
+      super("models/booth/booth.gltf", x, y, z, 41, 27.6f, 15.6f);                                            // Calls the Asset constructor to create the Booth
       this.speedReward = speedReward;                                                                                                               // Stores the speedReward for the Booth
       this.eatingRunOccurring = false;                                                                                                              // Sets eatingRunOccurring to false
       this.oneSecondTimer = 1;                                                                                                                      // Sets the oneSecondTimer to one second
@@ -58,7 +58,7 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
         }
 
         
-        if (distanceFromPlayer < 10) {                                                                                                              // If the Player is 10 units away from the booth...
+        if (distanceFromPlayer < 25) {                                                                                                              // If the Player is 10 units away from the booth...
             drawer.displayMessage("Press 'E' to sit down", 250, 100, 1420, 200, 0.1f);          // Display a message to the Player saying they can press 'e' to sit down
             
             if (Gdx.input.isKeyPressed(Input.Keys.E)) {                                                                                             // If the 'e' key is pressed...

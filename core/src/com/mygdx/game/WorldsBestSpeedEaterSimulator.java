@@ -30,7 +30,8 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
 //    private Restaurant restaurant;
     
     // Assets
-    private TrainingBooth booth;                                                                                                                        // Stores all necessary information about the booth Asset
+    private Asset cube;
+    private TrainingBooth booth;                                                                                                                // Stores all necessary information about the booth Asset
     private Asset plate;                                                                                                                        // Stores all necessary information about the plate Asset
     private Asset bacon;                                                                                                                        // Stores all necessary information about the bacon Asset
     private Asset restaurant;
@@ -52,6 +53,7 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
 
         // Player Setup
         player = Player.getInstance();                                                                                                          // Store a local reference to the Player
+        player.setLocation(0, 25, 0);
         
         // 2D Camera Setup
         camera2D = new OrthographicCamera();                                                                                                    // Creates a new 2D Camera
@@ -61,14 +63,16 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         drawer = Drawer.getInstance();                                                                                                          // Store a local reference to the Drawer
                 
         // Asset Setup
-        booth = new TrainingBooth(41, 27.6f, 15.6f, 20);                                                                       // Create the booth asset with the given gltf file and xyz coords
+        cube = new Asset("models/tests/originTest.gltf", 10, 0, 0, 2, 2, 2);
+        booth = new TrainingBooth(-7.8393f, 5.083f, -70.973f, 20);                                                                 // Create the booth asset with the given gltf file and xyz coords
         plate = new Asset("models/plate/TrainingBoothPlate.gltf", 0, 0, 0, 3.96f, 0.15f, 3.84f);            // Create the plate asset with the given gltf file and xyz coords
         bacon = new Asset("models/bacon/bacon.gltf", 0, 0.1f, 0, 1.74f, 0.274f, 2.21f);                     // Create the bacon asset with the given gltf file and xyz coords
         restaurant = new Asset("models/resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);           // Create the restaurant asset with the given gltf file and xyz corods
         
         // Scene Setup
-        sceneManager = new SceneManager();                                                                                                      // Create the SceneManager
-        sceneManager.addScene(booth.getBody());                                                                                       // Add booth to the SceneManager to make it manage the booth
+        sceneManager = new SceneManager();    
+        sceneManager.addScene(cube.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
+        sceneManager.addScene(booth.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
         sceneManager.addScene(plate.getBody());                                                                                           // Add plate to the SceneManager to make it manage the plate
         sceneManager.addScene(bacon.getBody());                                                                                           // Add bacon to the SceneManager to make it manage the bacon
         sceneManager.addScene(restaurant.getBody());                                                                                      // Add restaurant to the SceneManager to make it manage the restaurant
