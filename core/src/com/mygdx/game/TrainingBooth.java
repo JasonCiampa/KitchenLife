@@ -23,12 +23,20 @@ public class TrainingBooth extends Booth {
         this.speedRewardPerClick = this.speedReward / 6;                                                                                                                    // Set each mouse click to give 1/6 of the speedReward to the Player
     }
     
+    public TrainingBooth(float x, float y, float z, int speedReward, Food food) {
+        super(x, y, z, speedReward, food);                                                                                                                                        // Call the Booth constructor
+        this.speedRewardPerClick = this.speedReward / 6;                                                                                                                    // Set each mouse click to give 1/6 of the speedReward to the Player
+    }
+    
     // METHODS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Eating Run Methods
     
     @Override
     protected void startEatingRun() {
+        Player player = Player.getInstance();
+        player.setCollisionDetection(false);                                                                                                               // Disable the Player's collision detection so that it doesn't accidentally interfere with the Player being sat down in the Booth
+        
         this.eatingRunOccurring = true;                                                                                                                                     // Start the Training Run
         this.oneSecondTimer = 1;                                                                                                                                            // Initialize the one second timer
     }
@@ -46,15 +54,14 @@ public class TrainingBooth extends Booth {
                 Player player = Player.getInstance();                                                                                                                               // Store a local reference to the Player
 
                 this.oneSecondTimer = 1;                                                                                                                                            // Reset the timer to one second
-
-                player.increaseEatingSpeed((int) speedReward + (int) player.applyBonusBites() * (int) (0.16f * speedReward));                                                         // Increase the Player's eating speed by the sum of the Booth's speedReward + the number of bonusBites (clicks) multiplied by 1/6 of the Booth's speedReward
+                
+                float bonusBites = player.applyBonusBites() * (0.16f * speedReward);                                                                                                // Get the Player's bonus bites and multiply them by the speed multiplier (1/6 of speed reward)
+                player.increaseEatingSpeed(speedReward + bonusBites);                                                                                                               // Increase the Player's eating speed by the speedReward per second and their bonus bites multiplier
             }
 
             Drawer drawer = Drawer.getInstance();                                                                                                                               // Store a local reference to the Drawer
             drawer.displayMessage("Press 'ESC' to exit the Training Booth", 250, 100, 1420, 200, 0.1f);                   // Display a message showing how to exit the Booth and stop training
-            
-            Player.getInstance().setLocation(-13, 17, 8.5f);                                                                                                              // Keep the Player sat at the Booth
-        }
+        }        
     }
     
     @Override
@@ -62,11 +69,10 @@ public class TrainingBooth extends Booth {
         Player player = Player.getInstance();                                                                                                                               // Store a local reference to the Player
         
         player.setEating(false);                                                                                                                                      // Set the Player's eating state to false
+        player.setLocation(this.x - (this.length / 3), 25, this.z + (this.width / 2) + 10);                                                                               // Stand the Player up just to the side of the Booth
+        player.setCollisionDetection(true);                                                                                                                // Enable the Player's collision detection now that they're no longer seated                                         
         player.applyBonusBites();                                                                                                                                             // Get the Player's bonus bites (this is called so that the Player's bonus bites get reset, no leftovers)             
-        player.setEating(false);                                                                                                                                      // Set the Player's eating state to false
 
-        player.setLocation(-15, 25, 27);
-        
         this.eatingRunOccurring = false;                                                                                                                                    // End the training run
     }
     
