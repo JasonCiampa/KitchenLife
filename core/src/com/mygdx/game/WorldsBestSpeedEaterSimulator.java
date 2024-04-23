@@ -21,20 +21,13 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     private Player player;
     
     // 2D Camera
-    private OrthographicCamera camera2D;
+    private static OrthographicCamera camera2D;
     
     // Drawer
     private Drawer drawer;
     
-    // Scenes
-//    private Restaurant restaurant;
-    
-    // Assets
-    private Asset cube;
-    private TrainingBooth booth;                                                                                                                // Stores all necessary information about the booth Asset
-    private Asset plate;                                                                                                                        // Stores all necessary information about the plate Asset
-    private Asset bacon;                                                                                                                        // Stores all necessary information about the bacon Asset
-    private Asset restaurant;
+    // Restaurant
+    private Restaurant restaurant;                                                                                                              // Stores a reference to the Restaurant
     
     // Scene
     private SceneManager sceneManager;                                                                                                          // Manages the Scene and all of its components
@@ -45,6 +38,7 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     private Cubemap specularCubemap;                                                                                                            // Cubemap for the radiance of the Scene
     private Texture brdfLUT;                                                                                                                    // Texturing for the Scene
     private DirectionalLightEx light;                                                                                                           // Lighting for the Scene
+    
     
     // METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -63,21 +57,16 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         drawer = Drawer.getInstance();                                                                                                          // Store a local reference to the Drawer
                 
         // Asset Setup
-        cube = new Asset("models/tests/originTest.gltf", 10, 0, 0, 2, 2, 2);
-        booth = new TrainingBooth(-7.8393f, 5.083f, -70.973f, 20);                                                                 // Create the booth asset with the given gltf file and xyz coords
-        plate = new Asset("models/plate/TrainingBoothPlate.gltf", 0, 0, 0, 3.96f, 0.15f, 3.84f);            // Create the plate asset with the given gltf file and xyz coords
-        bacon = new Asset("models/bacon/bacon.gltf", 0, 0.1f, 0, 1.74f, 0.274f, 2.21f);                     // Create the bacon asset with the given gltf file and xyz coords
-        restaurant = new Asset("models/resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);           // Create the restaurant asset with the given gltf file and xyz corods
+
+        restaurant = new Restaurant("models/resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);      // Create the restaurant asset with the given gltf file and xyz corods
         
         // Scene Setup
         sceneManager = new SceneManager();    
-        sceneManager.addScene(cube.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
-        sceneManager.addScene(booth.getBody());                                                                                           // Add booth to the SceneManager to make it manage the booth
-        sceneManager.addScene(plate.getBody());                                                                                           // Add plate to the SceneManager to make it manage the plate
-        sceneManager.addScene(bacon.getBody());                                                                                           // Add bacon to the SceneManager to make it manage the bacon
-        sceneManager.addScene(restaurant.getBody());                                                                                      // Add restaurant to the SceneManager to make it manage the restaurant
         sceneManager.setCamera(player.getCamera().getView());                                                                             // Set the Player's camera as the SceneManager's camera
-                                 
+        
+        // Restaurant Setup
+        restaurant.load(sceneManager);                                                                                                          // Load in the Restaurant and all of its Assets
+        
         // Light Setup
         light = new DirectionalLightEx();                                                                                                       // Create the directional light and store it in light
         light.direction.set(1, -3, 1).nor();                                                                                              // Set the direction of the light to be slightly off-centered
@@ -112,30 +101,30 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         float dt = Gdx.graphics.getDeltaTime();                                                                                                 // Get the amount of time that has passed since the last call to render and store it in dt
 
         // Scene Rendering & Updating
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);                                                                    // Clear and redraw the bits on the screen?
+        
+        // Scene
         sceneManager.update(dt);                                                                                                          // Update the Scene with dt                                                                                  
         sceneManager.render();                                                                                                                  // Render the Scene
         
+        // Player
         player.update(dt);                                                                                                                      // Update the moveCam so that movement input from user can be processed
 
         // Camera Rendering & Updating
         camera2D.update();                                                                                                                      // Updates the 2D camera once every frame
         
         // Drawer
-        drawer.update(dt);                                                                                                                      // Update the Drawer
         drawer.getBatch().setProjectionMatrix(camera2D.combined);                                                                     // Set the SpriteBatch to use the 2D camera's coordinate system
         
         drawer.getBatch().begin();                                                                                                              // Begin the SpriteBatch
         
+        drawer.update(dt);                                                                                                                      // Update the Drawer
         drawer.render();                                                                                                                        // Draw any text that the Drawer has ready
         
         drawer.getBatch().end();                                                                                                                // End the SpriteBatch
         
-        booth.update(dt);                                                                                                                       // Update the Booth        
-        // Debug
-//        System.out.println("Player X: " + player.getX());
-//        System.out.println("Player Y: " + player.getY());
-//        System.out.println("Player Z: " + player.getZ() + "\n\n");
+        restaurant.update(dt);
     }
 
     @Override
@@ -145,5 +134,9 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         diffuseCubemap.dispose();
         specularCubemap.dispose();
         brdfLUT.dispose();
+    }
+    
+    public static OrthographicCamera getCamera2D() {
+        return camera2D;
     }
 }

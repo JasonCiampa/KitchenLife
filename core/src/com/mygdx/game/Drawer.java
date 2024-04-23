@@ -1,10 +1,12 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
  *
@@ -16,8 +18,10 @@ public class Drawer implements Updatable {
     
     private static Drawer instance;                                                                                                                                                                         // Singleton instance of the Drawer
     private SpriteBatch batch;                                                                                                                                                                              // SpriteBatch is used to draw 2D images.
-    private BitmapFont font;                                                                                                                                                                                // Font for the Drawer
     
+    private BitmapFont font;                                                                                                                                                                                // Large for the Drawer
+    private BitmapFont fontSmall;                                                                                                                                                                                // Small for the Drawer
+
     private boolean textActive;                                                                                                                                                                             // Whether or not the text is active
     private String text;                                                                                                                                                                                    // The text for the Drawer to display
     private GlyphLayout textDimensions;                                                                                                                                                                     // The dimensions of the text
@@ -33,7 +37,9 @@ public class Drawer implements Updatable {
     
     private Drawer() {
         this.batch = new SpriteBatch();                                                                                                                                                                     // Initializes the SpriteBatch
-        this.font = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic.fnt"));                                                                                                          // Initializes the font for writing text
+        
+        this.font = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_64px.fnt"));                                                                                                          // Initializes the font for writing text
+
         this.testImage = new Texture("images/background.jpg");                                                                                                                                  // Initializes the image
     }
     
@@ -66,6 +72,11 @@ public class Drawer implements Updatable {
 
     }
     
+    // Draw a little animation for when the Player has clicked on the screen
+    public void drawClickAnimation() {
+        
+    }
+    
     
     // Updatable Methods
    
@@ -83,13 +94,21 @@ public class Drawer implements Updatable {
     
     @Override
     public void render() {
-        if (this.textActive) {                                                                                                                                                                              // If the text is currently active...
-            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)), (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2));           // Write the given message
+        if (this.textActive) {                                                                                                                                                                                  // If the text is currently active...
+            this.font.setColor(Color.WHITE);
+            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)) - 2f, (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2));          // Draw the background white offset to the left 
+            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)) + 2f, (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2));          // Draw the background white offset to the right
+            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)), (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2) + 2f);          // Draw the background white offset upward
+            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)), (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2) - 2f);          // Draw the background white offset downward
+
+            this.font.setColor(Color.BLACK);
+            this.font.draw(batch, this.text, (this.textX + (this.textboxWidth / 2) - (this.textDimensions.width / 2)), (this.textY + this.textboxHeight / 2) + (this.textDimensions.height / 2));               // Draw the black text as the main message
         }
     }
     
     public void dispose() {
-        batch.dispose();
+        this.batch.dispose();
+        this.font.dispose();
     }
     
     
