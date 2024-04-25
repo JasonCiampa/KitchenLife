@@ -14,6 +14,10 @@ public class FirstPersonCamera extends FirstPersonCameraController {
     private int speed;                                                                          // Movement speed of the FirstPersonCamera
     private Camera view;                                                                        // Viewport of the FirstPersonCamera
         
+    private float lookX;                                                                        // The x-coordinate that the FirstPersonCamera is looking at
+    private float lookY;                                                                        // The y-coordinate that the FirstPersonCamera is looking at
+    private float lookZ;                                                                        // The z-coordinate that the FirstPersonCamera is looking at    
+    
     // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     public FirstPersonCamera(int speed, float locationX, float locationY, float locationZ, Camera camera) {
@@ -28,6 +32,10 @@ public class FirstPersonCamera extends FirstPersonCameraController {
         this.view.position.y = locationY;                                                       // Store the y-coordinate of the FirstPersonCamera
         this.view.position.z = locationZ;                                                       // Store the z-coordinate of the FirstPersonCamera
                     
+        this.lookX = this.view.direction.x;                                                     // Store the angle on the x-axis that the FirstPersonCamera is looking towards
+        this.lookY = this.view.direction.y;                                                     // Store the angle on the y-axis that the FirstPersonCamera is looking towards
+        this.lookZ = this.view.direction.z;                                                     // Store the angle on the z-axis that the FirstPersonCamera is looking towards
+        
         this.setVelocity(this.speed);                                                   // Set the movement speed of the FirstPersonCamera
     }
     
@@ -62,6 +70,50 @@ public class FirstPersonCamera extends FirstPersonCameraController {
     
     public Camera getView() {
         return this.view;
+    }
+    
+    // Returns an array of three floats representing how much distance was turned for each axis
+    public float[] getLookUpdates() {
+        float newLookX = this.view.direction.x;
+        float newLookY = this.view.direction.y;
+        float newLookZ = this.view.direction.z;
+        
+        // If facing the negative side of the x-axis and new update turns the camera to the right
+        if ((newLookX < 0) && newLookZ < 0) {
+            
+        }
+        // If facing the negative side of the x-axis and new update turns the camera to the left
+        else if ((newLookX < 0) && newLookZ > 0) {
+            
+        }
+        // If facing the positive side of the x-axis and new update turns the camera to the right
+        else if ((newLookX > 0) && newLookZ > 0) {
+            
+        }
+        // If facing the positive side of the x-axis and new update turns the camera to the left
+        else if ((newLookX > 0) && newLookZ < 0) {
+            
+        }
+        
+        // If facing the negative side of the z-axis and new update turns the camera to the right
+        if ((newLookZ < 0) && newLookX < 0) {
+            
+        }
+        // If facing the negative side of the z-axis and new update turns the camera to the left
+        else if ((newLookZ < 0) && newLookX > 0) {
+            
+        }
+        // If facing the positive side of the z-axis and new update turns the camera to the right
+        else if ((newLookZ > 0) && newLookX > 0) {
+            
+        }
+        // If facing the positive side of the z-axis and new update turns the camera to the left
+        else if ((newLookZ > 0) && newLookX < 0) {
+            
+        }
+        
+        
+        return new float[] {0.1f};
     }
     
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

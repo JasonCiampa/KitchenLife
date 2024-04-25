@@ -104,8 +104,6 @@ public class ChallengeBooth extends Booth {
         System.out.println("Time Limit: " + this.timeLimit);
         System.out.println("Time Left: " + this.timeLeft);
         System.out.println("Bites Remaining: " + this.bitesRemaining);
-
-        
     }
     
     @Override
@@ -124,6 +122,7 @@ public class ChallengeBooth extends Booth {
             player.increaseEatingSpeed(this.speedReward);                                                                                                                                            // Increase their eatingSpeed by speedReward
             player.increaseEatingReputation(this.reputationReward);                                                                                                                              // Increase their eatingReputation by reputationReward
             drawer.displayMessage("You completed the challenge!", 250, 100, 1420, 200, 2.5f);     // Display a message saying that the Player won
+            this.recordBroken = true;
         }
         else {                                                                                                                                                                                                   // Otherwise, the Player must have lost, so...
             drawer.displayMessage("You failed the challenge!", 250, 100, 1420, 200, 2.5f);              // Display a message saying that the Player lost
@@ -148,6 +147,10 @@ public class ChallengeBooth extends Booth {
     public int getBitesTotal() {
         return this.bitesTotal;
     }  
+    
+    public boolean getRecordBroken() {
+        return this.recordBroken;
+    }
     
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
