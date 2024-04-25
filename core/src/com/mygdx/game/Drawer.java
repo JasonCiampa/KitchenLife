@@ -77,6 +77,11 @@ public class Drawer implements Updatable {
         
     }
     
+    public void drawImage(String imagePath, int x, int y) {
+        Texture image = new Texture(imagePath);
+        this.batch.draw(image, x, y);
+    }
+    
     
     // Updatable Methods
    

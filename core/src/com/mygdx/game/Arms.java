@@ -22,7 +22,7 @@ public class Arms extends Asset {
     
     private Arms() {
        super("models/person/arms.gltf", 20, 15, 0, 7.39f, 4.23f, 1.5f);
-       this.setAnimation("eatingAnimation.002", true);
+       this.setAnimation("eating", true);
     }
     
     public static Arms getInstance() {
@@ -50,7 +50,7 @@ public class Arms extends Asset {
     
     public void update(float dt) {
         this.player = Player.getInstance();
-        this.setLocation(this.player.getX(), 15, this.player.getZ() + 20);
-        this.rotate();
+        this.setLocation(this.player.getX(), this.player.getY() - 10, this.player.getZ() + 20);
+//        this.rotate();
     }
 }

@@ -151,6 +151,10 @@ public class Player implements Interactable, Updatable {
         return this.moveSpeed;
     }
     
+    public boolean getEating() {
+        return this.eating;
+    }
+    
     // Returns the Player's moveSpeed
     public float getEatingSpeed() {
         return this.eatingSpeed;

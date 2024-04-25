@@ -31,8 +31,12 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     // Restaurant
     private Restaurant restaurant;                                                                                                              // Stores a reference to the Restaurant
     
-    // Scene2D
+    // Scene
     private SceneManager sceneManager;                                                                                                          // Manages the Scene2D and all of its components
+    
+    // Scene 2D
+    TitleScreen titleScreen;
+    GameUI gameUI;
     
     // Visuals
     private Cubemap environmentCubemap;                                                                                                         // Cubemap for the environment of the Scene2D
@@ -60,6 +64,10 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         // 2D Camera Setup
         camera2D = new OrthographicCamera();                                                                                                    // Creates a new 2D Camera
         camera2D.setToOrtho(false, 1920, 1080);                                                                  // Camera sets the viewport to 1080p
+        
+        // Title Screen
+        this.titleScreen = new TitleScreen();
+        this.gameUI = new GameUI();
         
         // Drawer Setup
         drawer = Drawer.getInstance();                                                                                                          // Store a local reference to the Drawer
@@ -114,23 +122,44 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         sceneManager.update(dt);                                                                                                          // Update the Scene2D with dt                                                                                  
         sceneManager.render();                                                                                                                  // Render the Scene2D
         
-        // Player
-        player.update(dt);                                                                                                                      // Update the moveCam so that movement input from user can be processed
-
         // Camera Rendering & Updating
-        camera2D.update();                                                                                                                      // Updates the 2D camera once every frame
-        
+        camera2D.update(); 
+                                                                                              // Updates the 2D camera once every frame
         // Drawer
         drawer.getBatch().setProjectionMatrix(camera2D.combined);                                                                     // Set the SpriteBatch to use the 2D camera's coordinate system
         
         drawer.getBatch().begin();                                                                                                              // Begin the SpriteBatch
         
         drawer.update(dt);                                                                                                                      // Update the Drawer
+        
         drawer.render();                                                                                                                        // Draw any text that the Drawer has ready
+        
+        if (titleScreen.active) {
+            titleScreen.update();
+            titleScreen.draw(drawer.getBatch());
+        }
+                   
         
         drawer.getBatch().end();                                                                                                                // End the SpriteBatch
         
-        restaurant.update(dt);
+        drawer.getBatch().begin();                                                                                                              // Begin the SpriteBatch
+
+        if (!titleScreen.active) {
+            // Player
+            player.update(dt);                                                                                                                      // Update the moveCam so that movement input from user can be processed
+            restaurant.update(dt);
+            gameUI.update();
+            gameUI.draw(drawer.getBatch());
+            
+            if (player.getEating()) {
+                Mouse.update(dt);
+                Mouse.draw();
+            }
+        }
+        
+        drawer.getBatch().end();                                                                                                                // End the SpriteBatch
+
+
     }
 
     @Override
