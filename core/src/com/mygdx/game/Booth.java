@@ -76,7 +76,7 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
       
       for (int i = 0; i < this.plates.length; i++) {
           this.food[i] = new Food(food.gltfFilePath, this.plates[i].x - 2.75f, this.plates[i].y + 14.25f, this.plates[i].z - 8, food.length, food.width, food.height);
-      }
+      } 
     }
     
     // METHODS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,12 +108,14 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
             
             
             // DEBUG
-            System.out.println("\n\nDistance From Booth to Player: " + distanceFromPlayer);
-            System.out.println("Player Coords: X: " + player.getX() + ",   Y: " + player.getY() + ",   Z: " + player.getZ());
-            System.out.println("Booth Coords: X: " + this.x + ",   Y: " + this.y + ",   Z: " + this.z);
-            System.out.println("Booth Width: " + this.width);
-            System.out.println("Player Eating Speed: " + player.getEatingSpeed());
-            System.out.println("Player Eating Reputation: " + player.getEatingReputation());
+//            System.out.println("\n\nDistance From Booth to Player: " + distanceFromPlayer);
+            System.out.println("\n\nPlayer Coords: X: " + player.getX() + ",   Y: " + player.getY() + ",   Z: " + player.getZ());
+            System.out.println("Player Arm Coords: X: " + player.arms.getX() + ",   Y: " + player.arms.getY() + ",   Z: " + player.arms.getZ());
+
+//            System.out.println("Booth Coords: X: " + this.x + ",   Y: " + this.y + ",   Z: " + this.z);
+//            System.out.println("Booth Width: " + this.width);
+//            System.out.println("Player Eating Speed: " + player.getEatingSpeed());
+//            System.out.println("Player Eating Reputation: " + player.getEatingReputation());
         }
 
         

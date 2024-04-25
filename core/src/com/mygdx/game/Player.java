@@ -3,7 +3,10 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
+import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 /**
  *
@@ -24,16 +27,18 @@ public class Player implements Interactable, Updatable {
     private float x;                                                                                                                                                                           // The x-coordinate of the Player
     private float y;                                                                                                                                                                           // The y-coordinate of the Player
     private float z;                                                                                                                                                                           // The z-coordinate of the Player
-    
+        
     // Speed
     private float moveSpeed;                                                                                                                                                                   // The move speed of the Player
     
     // Camera
     private FirstPersonCamera camera;                                                                                                                                                          // The camera of the Player
+    public Arms arms;
     
     // Instance
     private static Player instance;                                                                                                                                                            // The one Singleton instance of the Player
 
+    private float timer = 0;
     
     // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -47,19 +52,9 @@ public class Player implements Interactable, Updatable {
         this.z = this.camera.getView().position.z;                                                                                                                                             // Store the z-coordinate of the Player
         
         this.collisionDetection = true;                                                                                                                                                        // Enable the Player's collision detection
+        
+        this.arms = Arms.getInstance();
     }
-    
-    
-        // PLAYER ARMS
-            // Player Coords: X: 15.457734,   Y: 25.0,   Z: -19.45808  when Arms Looked Good: 
-//        arms = new Asset("models/person/arms.gltf", 0, 15, 0, 7.39f, 4.23f, 1.5f);
-//        arms.setAnimation("eatingAnimation.002", true);
-    
-    
-    
-    
-    
-    
     
     
     // METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -103,6 +98,7 @@ public class Player implements Interactable, Updatable {
             }
         }
         
+        float[] lookingAtCoords = this.getLookingAt();        
     }
     
     // Increases the eating speed of the Player
@@ -208,10 +204,16 @@ public class Player implements Interactable, Updatable {
     
     // UPDATABLES
     
+    public void load(SceneManager sceneManager) {
+        sceneManager.addScene(this.arms.body);
+    }
+    
     // Executes every frame
     @Override
     public void update(float dt) {
         this.camera.update(dt);                                                                                                                                                              // Updates the Player's camera
+        
+        this.arms.update(dt);
         
         if (this.eating) {                                                                                                                                                                            // If the Player is currently eating...                                                                                                                                                                     
             this.eat();                                                                                                                                                                                   // Process the Player's eating

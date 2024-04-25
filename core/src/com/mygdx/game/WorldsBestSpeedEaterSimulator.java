@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
@@ -29,25 +31,31 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     // Restaurant
     private Restaurant restaurant;                                                                                                              // Stores a reference to the Restaurant
     
-    // Scene
-    private SceneManager sceneManager;                                                                                                          // Manages the Scene and all of its components
+    // Scene2D
+    private SceneManager sceneManager;                                                                                                          // Manages the Scene2D and all of its components
     
     // Visuals
-    private Cubemap environmentCubemap;                                                                                                         // Cubemap for the environment of the Scene
-    private Cubemap diffuseCubemap;                                                                                                             // Cubemap for the irradiance of the Scene
-    private Cubemap specularCubemap;                                                                                                            // Cubemap for the radiance of the Scene
-    private Texture brdfLUT;                                                                                                                    // Texturing for the Scene
-    private DirectionalLightEx light;                                                                                                           // Lighting for the Scene
+    private Cubemap environmentCubemap;                                                                                                         // Cubemap for the environment of the Scene2D
+    private Cubemap diffuseCubemap;                                                                                                             // Cubemap for the irradiance of the Scene2D
+    private Cubemap specularCubemap;                                                                                                            // Cubemap for the radiance of the Scene2D
+    private Texture brdfLUT;                                                                                                                    // Texturing for the Scene2D
+    private DirectionalLightEx light;                                                                                                           // Lighting for the Scene2D
     
     
     // METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     @Override
     public void create() {
-
-        // Player Setup
         player = Player.getInstance();                                                                                                          // Store a local reference to the Player
-        player.setLocation(0, 25, 0);
+
+        // Scene2D Setup
+        sceneManager = new SceneManager();    
+        sceneManager.setCamera(player.getCamera().getView());                                                                             // Set the Player's camera as the SceneManager's camera
+        
+        // Player Setup
+        player.load(sceneManager);                                                                                                              // Load all necessary components of the Player
+        player.setLocation(16, 25, -20);
+        player.getCamera().getView().lookAt(50, 25, -20);
         
         // 2D Camera Setup
         camera2D = new OrthographicCamera();                                                                                                    // Creates a new 2D Camera
@@ -60,9 +68,7 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
 
         restaurant = new Restaurant("models/resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);      // Create the restaurant asset with the given gltf file and xyz corods
         
-        // Scene Setup
-        sceneManager = new SceneManager();    
-        sceneManager.setCamera(player.getCamera().getView());                                                                             // Set the Player's camera as the SceneManager's camera
+
         
         // Restaurant Setup
         restaurant.load(sceneManager);                                                                                                          // Load in the Restaurant and all of its Assets
@@ -83,16 +89,16 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         // Texture Setup
         brdfLUT = new Texture(Gdx.files.classpath("net/mgsx/gltf/shaders/brdfLUT.png"));                                             // Creates the texture for the environment
 
-        // Scene Setup
-        sceneManager.setAmbientLight(1f);                                                                                                   // Set the Scene's ambient light with a value of 1
-        sceneManager.environment.set(new PBRTextureAttribute(PBRTextureAttribute.BRDFLUTTexture, brdfLUT));                         // Create and set the Scene's texture to brdfLUT
-        sceneManager.environment.set(PBRCubemapAttribute.createSpecularEnv(specularCubemap));                                          // Create and set the Scene's specular envrionment
-        sceneManager.environment.set(PBRCubemapAttribute.createDiffuseEnv(diffuseCubemap));                                            // Create and set the Scene's diffuse environment
+        // Scene2D Setup
+        sceneManager.setAmbientLight(1f);                                                                                                   // Set the Scene2D's ambient light with a value of 1
+        sceneManager.environment.set(new PBRTextureAttribute(PBRTextureAttribute.BRDFLUTTexture, brdfLUT));                         // Create and set the Scene2D's texture to brdfLUT
+        sceneManager.environment.set(PBRCubemapAttribute.createSpecularEnv(specularCubemap));                                          // Create and set the Scene2D's specular envrionment
+        sceneManager.environment.set(PBRCubemapAttribute.createDiffuseEnv(diffuseCubemap));                                            // Create and set the Scene2D's diffuse environment
     }
 
     @Override
     public void resize(int width, int height) {
-        sceneManager.updateViewport(width, height);                                                                                             // Update the Scene's viewport
+        sceneManager.updateViewport(width, height);                                                                                             // Update the Scene2D's viewport
     }
 
     @Override
@@ -100,13 +106,13 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         // DeltaTime
         float dt = Gdx.graphics.getDeltaTime();                                                                                                 // Get the amount of time that has passed since the last call to render and store it in dt
 
-        // Scene Rendering & Updating
+        // Scene2D Rendering & Updating
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);                                                                    // Clear and redraw the bits on the screen?
         
-        // Scene
-        sceneManager.update(dt);                                                                                                          // Update the Scene with dt                                                                                  
-        sceneManager.render();                                                                                                                  // Render the Scene
+        // Scene2D
+        sceneManager.update(dt);                                                                                                          // Update the Scene2D with dt                                                                                  
+        sceneManager.render();                                                                                                                  // Render the Scene2D
         
         // Player
         player.update(dt);                                                                                                                      // Update the moveCam so that movement input from user can be processed
