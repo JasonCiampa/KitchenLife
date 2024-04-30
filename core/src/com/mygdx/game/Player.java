@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -22,6 +23,7 @@ public class Player implements Interactable, Updatable {
     private int bonusBites;                                                                                                                                                                    // How many bonus bites the Player has currently
     private boolean eating;                                                                                                                                                                    // Whether or not the Player is currently eating
     private boolean collisionDetection;                                                                                                                                                        // Whether or not the Player is currently checking for collisions
+    private Sound biteSFX;
     
     // Position
     private float x;                                                                                                                                                                           // The x-coordinate of the Player
@@ -53,7 +55,10 @@ public class Player implements Interactable, Updatable {
         
         this.collisionDetection = true;                                                                                                                                                        // Enable the Player's collision detection
         
-        this.arms = Arms.getInstance();
+        this.eatingSpeed = 1;
+        this.eatingReputation = 0;
+        
+        this.biteSFX = Gdx.audio.newSound(Gdx.files.internal("sfx/chomp.mp3"));
     }
     
     
@@ -67,38 +72,10 @@ public class Player implements Interactable, Updatable {
     
     // Handles the Player's input while in an eating situation
     public void eat() {
-       // Check if the KeySpawner is actively spawning Keys
-//       if (KeySpawner.isActive()) {
-//            Check if a key was pressed, THEN check if that key that was pressed was 'e' (or any other active letter).
-//            If so, increment bonus bites. 
-//            Otherwise, despawn the letter (despawn just one letter if there are multiple, the first one that spawned will die first) user biffed it!
-//
-//           if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-//               this.bonusBites += 1;
-//           }
-//       }
-//       else {
-//           if (mouse is clicked) {
-//               this.bonusBites += 1;
-//           } 
-//       }
-        
-        // Handle eating animation updates here possibly?
-        
-        
-        
-        if (this.z < 0) {                                                                                                                                                                   // If the Player is in a Training Booth...
-            if (Mouse.checkClick()) {                                                                                                                                                           // If the mouse was clicked...
-                this.bonusBites += 1;                                                                                                                                                               // Increment the number of bonus bites by 1
-            }
+        if (Mouse.checkClick()) {                                                                                                                                                           // If the mouse was clicked...
+            this.bonusBites += 1;                                                                                                                                                               // Increment the number of bonus bites by 1
+            this.biteSFX.play(0.2f);
         }
-        else {                                                                                                                                                                              // Otherwise, the Player is in a Challenge Booth...
-            if (Mouse.checkClick()) {                                                                                                                                                           // If the mouse was clicked...
-                this.bonusBites += 1;                                                                                                                                                               // Increment the number of bonus bites by 1
-            }
-        }
-        
-        float[] lookingAtCoords = this.getLookingAt();        
     }
     
     // Increases the eating speed of the Player
@@ -206,10 +183,14 @@ public class Player implements Interactable, Updatable {
     }
    
     
+    public void bite() {
+        this.biteSFX.play(0.2f);
+    }
+    
     // UPDATABLES
     
     public void load(SceneManager sceneManager) {
-        sceneManager.addScene(this.arms.body);
+//        sceneManager.addScene(this.arms.body);
     }
     
     // Executes every frame
@@ -217,7 +198,7 @@ public class Player implements Interactable, Updatable {
     public void update(float dt) {
         this.camera.update(dt);                                                                                                                                                              // Updates the Player's camera
         
-        this.arms.update(dt);
+//        this.arms.update(dt);
         
         if (this.eating) {                                                                                                                                                                            // If the Player is currently eating...                                                                                                                                                                     
             this.eat();                                                                                                                                                                                   // Process the Player's eating
@@ -225,6 +206,7 @@ public class Player implements Interactable, Updatable {
         else {                                                                                                                                                                                         // Otherwise, the Player could be moving around, so...
             this.x = this.camera.getView().position.x;                                                                                                                                                    // Update the Player's x-coordinate
             this.z = this.camera.getView().position.z;                                                                                                                                                    // Update the Player's z-coordinate
+            
             
             // COLLISION DETECTION
             // I manually moved the Player around and printed the coordinates so that I could determine which areas to make off-limits for the Player.

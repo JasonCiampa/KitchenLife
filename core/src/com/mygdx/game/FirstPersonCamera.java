@@ -1,7 +1,9 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
+
 
 /**
  *
@@ -19,6 +21,7 @@ public class FirstPersonCamera extends FirstPersonCameraController {
     private float lookZ;                                                                        // The z-coordinate that the FirstPersonCamera is looking at    
     
     // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
     
     public FirstPersonCamera(int speed, float locationX, float locationY, float locationZ, Camera camera) {
         super(camera);                                                                          // Call the super constructor (FirstPersonCameraController)

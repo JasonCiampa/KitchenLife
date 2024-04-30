@@ -29,10 +29,10 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     private Drawer drawer;
     
     // Restaurant
-    private Restaurant restaurant;                                                                                                              // Stores a reference to the Restaurant
+    private static Restaurant currentRestaurant;
     
     // Scene
-    private SceneManager sceneManager;                                                                                                          // Manages the Scene2D and all of its components
+    private static SceneManager sceneManager;                                                                                                          // Manages the Scene2D and all of its components
     
     // Scene 2D
     TitleScreen titleScreen;
@@ -66,20 +66,16 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
         camera2D.setToOrtho(false, 1920, 1080);                                                                  // Camera sets the viewport to 1080p
         
         // Title Screen
-        this.titleScreen = new TitleScreen();
-        this.gameUI = new GameUI();
+        titleScreen = new TitleScreen();
+        titleScreen.load();
+        gameUI = new GameUI();
         
         // Drawer Setup
         drawer = Drawer.getInstance();                                                                                                          // Store a local reference to the Drawer
-                
-        // Asset Setup
-
-        restaurant = new Restaurant("models/resturantWalls/resturant.gltf", 0, 0, 0, 231, 54.8f, 132);      // Create the restaurant asset with the given gltf file and xyz corods
-        
-
         
         // Restaurant Setup
-        restaurant.load(sceneManager);                                                                                                          // Load in the Restaurant and all of its Assets
+        currentRestaurant = new RestaurantOne();
+        currentRestaurant.load(sceneManager);
         
         // Light Setup
         light = new DirectionalLightEx();                                                                                                       // Create the directional light and store it in light
@@ -127,6 +123,7 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
                                                                                               // Updates the 2D camera once every frame
         // Drawer
         drawer.getBatch().setProjectionMatrix(camera2D.combined);                                                                     // Set the SpriteBatch to use the 2D camera's coordinate system
+        drawer.getShapeRenderer().setProjectionMatrix(camera2D.combined);
         
         drawer.getBatch().begin();                                                                                                              // Begin the SpriteBatch
         
@@ -138,33 +135,42 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
             titleScreen.update();
             titleScreen.draw(drawer.getBatch());
         }
-                   
         
         drawer.getBatch().end();                                                                                                                // End the SpriteBatch
-        
         drawer.getBatch().begin();                                                                                                              // Begin the SpriteBatch
 
         if (!titleScreen.active) {
             // Player
             player.update(dt);                                                                                                                      // Update the moveCam so that movement input from user can be processed
-            restaurant.update(dt);
+            currentRestaurant.update(dt);
+            
+            if (!gameUI.musicPlaying) {
+                gameUI.playMusic();
+                gameUI.backgroundMusic.setVolume(0.10f);                                                                                                                  // Lowers the volume to 25% for the Scene2D's background music
+            }
+            
             gameUI.update();
             gameUI.draw(drawer.getBatch());
+            drawer.drawEatingStats();
+
             
             if (player.getEating()) {
-                Mouse.update(dt);
+                Mouse.update(Gdx.graphics.getDeltaTime());
                 Mouse.draw();
+                
+                if (player.getZ() > 0) {                                                                                                                                                                   // If the Player is in a Training Booth...
+                    drawer.drawProgressBars();
+                }                                                                                                                                                                         // Otherwise, the Player is in a Challenge Booth...
             }
         }
         
         drawer.getBatch().end();                                                                                                                // End the SpriteBatch
-
-
     }
 
     @Override
     public void dispose() {
         sceneManager.dispose();
+        currentRestaurant.dispose();
         environmentCubemap.dispose();
         diffuseCubemap.dispose();
         specularCubemap.dispose();
@@ -173,5 +179,17 @@ public class WorldsBestSpeedEaterSimulator extends ApplicationAdapter {
     
     public static OrthographicCamera getCamera2D() {
         return camera2D;
+    }
+    
+    public static void setCurrentRestaurant(Restaurant newRestaurant) {
+        Restaurant oldRestaurant = currentRestaurant;
+        currentRestaurant = newRestaurant;
+        
+        currentRestaurant.load(sceneManager);
+        oldRestaurant.unload(sceneManager);
+    }
+    
+    public static Restaurant getCurrentRestaurant() {
+        return currentRestaurant;
     }
 }

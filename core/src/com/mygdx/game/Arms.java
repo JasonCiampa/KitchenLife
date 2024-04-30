@@ -23,6 +23,9 @@ public class Arms extends Asset {
     private Arms() {
        super("models/person/arms.gltf", 20, 15, 0, 7.39f, 4.23f, 1.5f);
        this.setAnimation("eating", true);
+       
+       Quaternion quaternion = new Quaternion().setFromAxis(Vector3.Y, 0);
+       this.body.modelInstance.transform.rotate(quaternion);
     }
     
     public static Arms getInstance() {
@@ -34,23 +37,24 @@ public class Arms extends Asset {
     }
     
     public void rotate() {
-        this.player = Player.getInstance();
-        
-        Matrix4 orientationMatrix = new Matrix4().setToLookAt(Vector3.Zero, this.player.getCamera().getView().direction, this.player.getCamera().getView().up);
+        Matrix4 orientationMatrix = new Matrix4().setToLookAt(Vector3.Zero, this.player.getCamera().getView().direction, this.player.getCamera().getView().up);;
 
         Quaternion cameraAngle = new Quaternion();
         cameraAngle.setFromMatrix(orientationMatrix);
         
         this.body.modelInstance.transform.rotate(this.rotation);     
         
-        this.rotation = cameraAngle;
+        this.rotation = cameraAngle.setEulerAngles(cameraAngle.getYaw(), cameraAngle.getPitch(), cameraAngle.getRoll());
         
         this.body.modelInstance.transform.rotate(this.rotation.cpy().conjugate());   
     }
     
     public void update(float dt) {
-        this.player = Player.getInstance();
-        this.setLocation(this.player.getX(), this.player.getY() - 10, this.player.getZ() + 20);
-//        this.rotate();
+        if (this.player == null) {
+            this.player = Player.getInstance();
+        }
+
+        this.setLocation(this.player.getX(), this.player.getY() - 10, this.player.getZ());
+        this.rotate();
     }
 }

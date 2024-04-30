@@ -3,6 +3,9 @@ package com.mygdx.game;
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
@@ -13,34 +16,31 @@ public class Mouse {
     
     // FIELDS
     private static Vector3 gameCoordinates = new Vector3();                                          // A Vector3 to hold the Mouse's converted coordinates (Mouse coordinates to Game coordinates)
-    private static boolean clickCooldown;                                                            // A timer to limit click speed
+    private static boolean clickCooldown = false;                                                            // A timer to limit click speed
     
-    private static float animationTimer;
-    private static boolean playAnimation;
+    private static float animationTimer = 0;
+    private static boolean playAnimation = false;
     
-    private static ArrayList<Sprite[]> sprites;
+    private static ArrayList<Sprite[]> sprites = new ArrayList<Sprite[]>();
     
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
     // CONSTRUCTOR
     private Mouse() {
         // This class doesn't need to be instantiated, all methods are static
-        animationTimer = 0;
-        playAnimation = false;
-        
-        sprites = new ArrayList<Sprite[]>();
     }
+
     
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
     private static class Sprite {
-        private float startX;
-        private float startY;
+        private int startX;
+        private int startY;
         
-        private float currentX;
-        private float currentY;
+        private int currentX;
+        private int currentY;
         
-        private Sprite(float startX, float startY) {
+        private Sprite(int startX, int startY) {
             this.startX = startX;
             this.startY = startY;
             
@@ -48,41 +48,38 @@ public class Mouse {
             this.currentY = startY;
         }
         
-        private void move(float moveX, float moveY) {
+        private void move(int moveX, int moveY) {
             this.currentX += moveX;
             this.currentY += moveY;
         }
         
         private void draw() {
-            Drawer.getInstance().drawImage("images/mouth.png", (int) this.currentX, (int) this.currentY);
+            Drawer.getInstance().drawImage("images/mouth.png", this.currentX, this.currentY);
         }
     }
     
     // METHODS
     
+    
     // Updates the Mouse
     public static void update(float dt) {
-        if (playAnimation) {
-            for (int i = sprites.size() - 1; i >= 0; i--) {
-                if ((sprites.get(i)[0].startX - sprites.get(i)[0].currentX) > 50) {
-                    sprites.remove(i);
-                }
-                else {
-                    sprites.get(i)[0].currentX -= 5;
-                    sprites.get(i)[0].currentY += 5;
-
-                    sprites.get(i)[1].currentX += 5;
-                    sprites.get(i)[1].currentY += 5;
-
-                    sprites.get(i)[2].currentX -= 5;
-                    sprites.get(i)[2].currentY -= 5;
-
-                    sprites.get(i)[3].currentX += 5;
-                    sprites.get(i)[3].currentY -= 5;
-                }
+        for (int i = sprites.size() - 1; i >= 0; i--) {
+            if ((sprites.get(i)[0].startX - sprites.get(i)[0].currentX) > 40) {
+                sprites.remove(i);
             }
-            
-            playAnimation = false;
+            else {
+                sprites.get(i)[0].currentX -= 5;
+                sprites.get(i)[0].currentY += 5;
+
+                sprites.get(i)[1].currentX += 5;
+                sprites.get(i)[1].currentY += 5;
+
+                sprites.get(i)[2].currentX -= 5;
+                sprites.get(i)[2].currentY -= 5;
+
+                sprites.get(i)[3].currentX += 5;
+                sprites.get(i)[3].currentY -= 5;
+            }
         }
     }
     
@@ -108,32 +105,21 @@ public class Mouse {
         return (int) gameCoordinates.y;                                                             // Return the y-coordinate in gameCoords
     }
     
-    public static void playClickAnimation(float dt) {
-        if (animationTimer <= 0) {
-            animationTimer = 0.1f;
-            playAnimation = true;
-        }
-        else {
-            animationTimer -= dt;
-        }
-    }
-    
     // Determines whether or not the mouse was clicked.
-    public static boolean checkClick() {
-        if (clickCooldown && (!Gdx.input.isTouched())) {                                            // If the Mouse has been let go since the last click...
+    public static boolean checkClick() {        
+        if ((clickCooldown) && !Gdx.input.isTouched()) {                   // If the Mouse has been let go since the last click...
             clickCooldown = false;                                                                      // Disable the click cooldown
         }
         else if ((!clickCooldown) && Gdx.input.isTouched()) {                                       // Otherwise, if the Mouse has been let go since the last click and has been clicked again...
             clickCooldown = true;                                                                       // Enable the click cooldown   
             
-            Sprite[] test = new Sprite[4];
+            Sprite[] clickSprites = new Sprite[4];
             
             for (int i = 0; i < 4; i++) {
-                test[i] = new Sprite(Mouse.getX(), Mouse.getY());
+                clickSprites[i] = new Sprite(Mouse.getX(), Mouse.getY());
             }
             
-            Mouse.playClickAnimation(Gdx.graphics.getDeltaTime());                                                                                                 // Get the amount of time that has passed since the last call to render and store it in dt
-
+            sprites.add(clickSprites);
             
             return true;                                                                                // Return true to indicate a click has occurred
         }

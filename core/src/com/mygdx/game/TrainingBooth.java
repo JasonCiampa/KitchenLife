@@ -57,6 +57,7 @@ public class TrainingBooth extends Booth {
                 
                 float bonusBites = player.applyBonusBites() * (0.16f * speedReward);                                                                                                // Get the Player's bonus bites and multiply them by the speed multiplier (1/6 of speed reward)
                 player.increaseEatingSpeed(speedReward + bonusBites);                                                                                                               // Increase the Player's eating speed by the speedReward per second and their bonus bites multiplier
+                player.bite();
             }
 
             Drawer drawer = Drawer.getInstance();                                                                                                                               // Store a local reference to the Drawer

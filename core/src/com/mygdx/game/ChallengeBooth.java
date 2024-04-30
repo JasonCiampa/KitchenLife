@@ -82,6 +82,7 @@ public class ChallengeBooth extends Booth {
                                 
                 float bonusBites = player.applyBonusBites() * (0.1f * player.getEatingSpeed());                                                                                                                         // Get the Player's bonus bites and multiply them by the speed multiplier (1/10 of player speed)                
                 this.bitesRemaining -= (player.getEatingSpeed() + bonusBites);                                                                                                                                         // Decrement the # of bitesRemaining by the calculated number of bites taken this past second  (Not sure if this math will make it balanced in-game, but we'll test and adjust)
+                player.bite();
             }
 
             if (this.bitesRemaining <= 0) {                                                                                                                                                                          // If there are no bites remaining...
@@ -134,6 +135,10 @@ public class ChallengeBooth extends Booth {
     
     public int getReputationReward() {
         return this.reputationReward;
+    }
+    
+    public double getTimeLeft() {
+        return this.timeLeft;
     }
     
     public double getTimeLimit() {

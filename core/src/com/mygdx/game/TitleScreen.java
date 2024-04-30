@@ -28,7 +28,7 @@ public class TitleScreen extends Scene2D {
 
     // CONSTRUCTOR //
     public TitleScreen() {
-        super("images/background.jpg", "music/Nintendo 3DS Music - Mii Maker.mp3", 0, 0);                                              // Calls the Scene's constructor to build the framework for TitleScreen
+        super("images/titlescreen.png", "music/Nintendo 3DS Music - Mii Maker.mp3", 0, 0);                                              // Calls the Scene's constructor to build the framework for TitleScreen
         
 //        gameLogo = new Texture("images/main_menu/killer_logo.png");                                                                                                                // Stores the gameLogo texture
     
@@ -38,6 +38,7 @@ public class TitleScreen extends Scene2D {
             @Override
             public void clickAction() {
                 TitleScreen.this.active = false;
+                TitleScreen.this.stopMusic();
             }
         };                 
             
@@ -56,7 +57,7 @@ public class TitleScreen extends Scene2D {
     // Anything that should happen immediately as TitleScreen becomes active should go in load
     @Override
     protected void load() {
-
+        this.playMusic();
     }
     
     @Override

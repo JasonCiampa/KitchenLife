@@ -30,7 +30,11 @@ public abstract class Button {
     protected float scaleY;                                                                                                                                                 // Scale factor for y-axis
     
     protected String text;                                                                                                                                                  // Text to be displayed on the Button
+    
     protected BitmapFont font;                                                                                                                                              // Font for the Button's text
+    protected BitmapFont fontSmall;                                                                                                                                              // Font for the Button's text
+    protected BitmapFont activeFont;
+    
     protected GlyphLayout textDimensions;                                                                                                                                   // Holds the width and height of the Button's text
     
     protected final Sound clickSfx;                                                                                                                                         // Sound effect to be played when the Button is clicked on
@@ -52,9 +56,13 @@ public abstract class Button {
         this.y = y;                                                                                                                                                         // Sets the y-coordinate of the Button
         this.scaleX = scaleX;                                                                                                                                               // Sets the scale factor for the x-axis of the Button
         this.scaleY = scaleY;                                                                                                                                               // Sets the scale factor for the y-axis of the Button
-        this.text = text;                                                                                                                                                   // Sets the Button's text    
+        this.text = text;                                  
+        // Sets the Button's text    
+        
         this.font = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_60px.fnt"));                                                                                        // Sets the Button's font
-        this.textDimensions = new GlyphLayout(this.font, this.text);                                                                                                        // Stores the Button's text dimensions
+        this.fontSmall = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_48px.fnt"));                                                                                                          // Initializes the font for writing text
+        this.activeFont = this.font;
+        this.textDimensions = new GlyphLayout(this.activeFont, this.text);                                                                                                        // Stores the Button's text dimensions
 
         this.clickSfx = Gdx.audio.newSound(Gdx.files.internal("sfx/button_click.mp3"));                                                                                     // Sets the Button's click noise   
         
@@ -123,9 +131,9 @@ public abstract class Button {
     // Sets the Button's text
     public void setText(String text) {
         this.text = text;
-        this.textDimensions = new GlyphLayout(this.font, this.text);
+        this.textDimensions = new GlyphLayout(this.activeFont, this.text);
     }
-    
+        
     // Sets the Button's active state
     public void setActive(boolean active) {
         this.active = active;
@@ -155,7 +163,7 @@ public abstract class Button {
 
         
             batch.draw(skin, this.x, this.y, this.width, this.height);                                                                                                       // Draw the Button
-            font.draw(batch, this.text, (this.x + (this.width / 2) - (this.textDimensions.width / 2)), (this.y + this.height / 2) + (this.textDimensions.height / 2));       // Writes the Button's text
+            this.activeFont.draw(batch, this.text, (this.x + (this.width / 2) - (this.textDimensions.width / 2)), (this.y + this.height / 2) + (this.textDimensions.height / 2));       // Writes the Button's text
             batch.setColor(1, 1, 1, 1);                                                                                                                                      // Sets the current drawing color to normal    
         }
     }

@@ -110,7 +110,7 @@ public abstract class Booth extends Asset implements Interactable, Updatable {
             // DEBUG
 //            System.out.println("\n\nDistance From Booth to Player: " + distanceFromPlayer);
             System.out.println("\n\nPlayer Coords: X: " + player.getX() + ",   Y: " + player.getY() + ",   Z: " + player.getZ());
-            System.out.println("Player Arm Coords: X: " + player.arms.getX() + ",   Y: " + player.arms.getY() + ",   Z: " + player.arms.getZ());
+//            System.out.println("Player Arm Coords: X: " + player.arms.getX() + ",   Y: " + player.arms.getY() + ",   Z: " + player.arms.getZ());
 
 //            System.out.println("Booth Coords: X: " + this.x + ",   Y: " + this.y + ",   Z: " + this.z);
 //            System.out.println("Booth Width: " + this.width);
