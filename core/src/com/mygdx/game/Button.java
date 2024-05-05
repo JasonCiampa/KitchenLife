@@ -10,17 +10,21 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+/**
+ *
+ * @author Jason Ciampa
+ */
 
 public abstract class Button {
         
-    // FIELDS//
-    protected final static Texture[] skins = {new Texture("images/button/longButton.jpg"), new Texture("images/button/shortButton.jpg")};     // Stores the Button skins                                                                                                                                        
+    // FIELDS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    protected final static Texture[] skins = {new Texture("images/button/longButton.jpg"), new Texture("images/button/shortButton.jpg")};           // Stores the Button skins                                                                                                                                        
 
     public static final int LONG = 0;                                                                                                                                       // Static field to reference a long button
     public static final int SHORT = 1;                                                                                                                                      // Static field to reference a short button
     
-    protected final Texture skin;
+    protected final Texture skin;                                                                                                                                           // Image of the button
     
     protected int width;                                                                                                                                                    // Width of the Button (px)
     protected int height;                                                                                                                                                   // Height of the Button (px)
@@ -30,24 +34,22 @@ public abstract class Button {
     protected float scaleY;                                                                                                                                                 // Scale factor for y-axis
     
     protected String text;                                                                                                                                                  // Text to be displayed on the Button
-    
     protected BitmapFont font;                                                                                                                                              // Font for the Button's text
-    protected BitmapFont fontSmall;                                                                                                                                              // Font for the Button's text
-    protected BitmapFont activeFont;
-    
+    protected BitmapFont fontSmall;                                                                                                                                         // Font for the Button's text
+    protected BitmapFont activeFont;                                                                                                                                        // The currently active font
     protected GlyphLayout textDimensions;                                                                                                                                   // Holds the width and height of the Button's text
     
     protected final Sound clickSfx;                                                                                                                                         // Sound effect to be played when the Button is clicked on
     
     protected boolean mouseHovering;                                                                                                                                        // Whether or not the mouse is hovering over the Button
     
-    protected Scene2D buttonLocation;                                                                                                                                         // The Scene2D that the Button is being stored in
+    protected Scene2D buttonLocation;                                                                                                                                       // The Scene2D that the Button is being stored in
     
     protected boolean active;                                                                                                                                               // Whether or not the Button is active
     
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
-    // CONSTRUCTOR //
+    // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
     public Button(int buttonType, int x, int y, String text, Scene2D buttonLocation) {
         this.skin = skins[buttonType];    
         this.width = skin.getWidth();                                                                                                                                       // Sets the Button width (to the width of the skin)                        
@@ -59,12 +61,12 @@ public abstract class Button {
         this.text = text;                                  
         // Sets the Button's text    
         
-        this.font = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_60px.fnt"));                                                                                        // Sets the Button's font
-        this.fontSmall = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_48px.fnt"));                                                                                                          // Initializes the font for writing text
+        this.font = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_60px.fnt"));                                                                     // Sets the Button's font
+        this.fontSmall = new BitmapFont(Gdx.files.internal("fonts/showcard_gothic_48px.fnt"));                                                                // Initializes the font for writing text
         this.activeFont = this.font;
-        this.textDimensions = new GlyphLayout(this.activeFont, this.text);                                                                                                        // Stores the Button's text dimensions
+        this.textDimensions = new GlyphLayout(this.activeFont, this.text);                                                                                         // Stores the Button's text dimensions
 
-        this.clickSfx = Gdx.audio.newSound(Gdx.files.internal("sfx/button_click.mp3"));                                                                                     // Sets the Button's click noise   
+        this.clickSfx = Gdx.audio.newSound(Gdx.files.internal("sfx/button_click.mp3"));                                                                            // Sets the Button's click noise   
         
         this.mouseHovering = false;                                                                                                                                         // Sets the Button's mouseHovering state to false
         
@@ -88,9 +90,8 @@ public abstract class Button {
         this.clickAction();                                                                                                                                                 // Initiate the Button's click action
     }
     
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
-    // GETTER AND SETTER METHODS //
+    // GETTER METHODS // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
     // Returns the width of the Button
     public int getWidth() {
@@ -117,6 +118,9 @@ public abstract class Button {
         return this.mouseHovering;
     }
     
+    
+    // SETTER METHODS // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+    
     // Sets whether or not the mouse is hovering over the Button
     public void setMouseHovering(boolean isHovering) {
         this.mouseHovering = isHovering;
@@ -139,13 +143,13 @@ public abstract class Button {
         this.active = active;
     }
     
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+   
 
-    // STATE HANDLING FUNCTIONS //
+    // STATE HANDLING FUNCTIONS // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     
     protected void update() {
         if (this.active) {
-            this.setMouseHovering(Mouse.checkHover(this.getX(), this.getY(), this.getWidth(), this.getHeight()));                                       // Check if the mouse is hovering over the Button    
+            this.setMouseHovering(Mouse.checkHover(this.getX(), this.getY(), this.getWidth(), this.getHeight()));                                 // Check if the mouse is hovering over the Button    
             
             if (this.mouseHovering && Mouse.checkClick()) {                                                                                                                 // If the button was clicked on...    
                 this.performAction();                                                                                                                                           // Perform the Button's action
@@ -156,7 +160,7 @@ public abstract class Button {
     
     // Draws the Button on the Screen
     protected void draw(SpriteBatch batch) {
-        if (this.active) {
+        if (this.active) {                                                                                                                                      
             if (this.mouseHovering) {                                                                                                                                        // If the Button is being hovered over by the mouse...
                 batch.setColor((float) 0.5, (float) 0.5, (float) 0.5, 1);                                                                                                       // Make the color dimmer and darker to indicate a hovering state
             }

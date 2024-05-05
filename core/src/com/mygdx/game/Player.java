@@ -13,7 +13,9 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
  *
  * @author Jason Ciampa
  */
-public class Player implements Interactable, Updatable {
+
+// SINGLETON DESIGN PATTERN IS USED FOR THIS CLASS
+public class Player implements Interactable {
     
     // FIELDS // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -45,7 +47,7 @@ public class Player implements Interactable, Updatable {
     // CONSTRUCTOR // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     private Player() {
-        this.camera = new FirstPersonCamera(50, 10, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));    // Create and store the Player's camera
+        this.camera = new FirstPersonCamera(50, 10, 25, 0, new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));                          // Create and store the Player's camera
         
         Gdx.input.setInputProcessor(this.camera);                                                                                                                                           // Set the input processor for our game to be based on the Player's camera
 
@@ -55,151 +57,55 @@ public class Player implements Interactable, Updatable {
         
         this.collisionDetection = true;                                                                                                                                                        // Enable the Player's collision detection
         
-        this.eatingSpeed = 1;
-        this.eatingReputation = 0;
+        this.eatingSpeed = 1;                                                                                                                                                                  // Store the Player's eating speed as 1 bite per second
+        this.eatingReputation = 0;                                                                                                                                                             // Store the Player's eating reputation as 0
         
-        this.biteSFX = Gdx.audio.newSound(Gdx.files.internal("sfx/chomp.mp3"));
+        this.biteSFX = Gdx.audio.newSound(Gdx.files.internal("sfx/chomp.mp3"));                                                                                                                // Store the bite sound effect
     }
-    
+
     
     // METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    // Sits the Player 
+    // Sits the Player down at the given coordinates facing the other given coordinates
     public void sitDown(float x, float z, float lookX, float lookZ) {
         this.setLocation(x, 20, z);                                                                                                                                                          // Set the location of the Player to x, 17, z (17 is the seated height)
-        this.camera.getView().lookAt(lookX, this.y, lookZ);                                                                                                                              // Make the Player look straight ahead in a given direction
+        this.camera.getView().lookAt(lookX, this.y, lookZ);                                                                                                                                    // Make the Player look straight ahead in a given direction
     }
     
-    // Handles the Player's input while in an eating situation
+    // Handles the Player's input while they are eating
     public void eat() {
-        if (Mouse.checkClick()) {                                                                                                                                                           // If the mouse was clicked...
-            this.bonusBites += 1;                                                                                                                                                               // Increment the number of bonus bites by 1
-            this.biteSFX.play(0.2f);
+        if (Mouse.checkClick()) {                                                                                                                                                              // If the mouse was clicked...
+            this.bonusBites += 1;                                                                                                                                                                  // Increment the number of bonus bites by 1
+            this.biteSFX.play(0.2f);                                                                                                                                                               // Play the bite sound effect at 20% volume
         }
     }
     
     // Increases the eating speed of the Player
     public void increaseEatingSpeed(float eatingSpeedGained) {
-        this.eatingSpeed += eatingSpeedGained;                                                                                                                                               // Increases the eating speed of the Player
+        this.eatingSpeed += eatingSpeedGained;                                                                                                                                                 // Increases the eating speed of the Player
     }
 
     // Increases the eating reputation of the Player
     public void increaseEatingReputation(int eatingReputationGained) {
-        this.eatingReputation += eatingReputationGained;                                                                                                                                     // Increases the eating reputation of the Player
+        this.eatingReputation += eatingReputationGained;                                                                                                                                       // Increases the eating reputation of the Player
     }
     
-    public int applyBonusBites() {
-        int bonusBites = this.bonusBites;                                                                                                                                                    // Store the number of bonus bites in a variable
-        this.bonusBites = 0;                                                                                                                                                                 // Reset the Player's count of bonusBites since these current bonus bites are being registered
-        return bonusBites;                                                                                                                                                                   // Return the number of bonus bites that the Player had before the reset
-    }
-    
-    // Interactable Methods
-    
-    @Override
-    public void detectInteractions() {
-
-    }
-    
-    @Override
-    public void processInteraction(Interactable sender, int interactionType) {
-
-    }
-    
-    // Getters
-    
-    // Returns the Player's x-coordinate
-    public float getX() {
-        return this.x;
-    }
-    
-    // Returns the Player's y-coordinate
-    public float getY() {
-        return this.y;
-    }
-    
-    // Returns the Player's z-coordinate
-    public float getZ() {
-        return this.z;
-    }
-    
-    // Returns the Player's moveSpeed
-    public float getMoveSpeed() {
-        return this.moveSpeed;
-    }
-    
-    public boolean getEating() {
-        return this.eating;
-    }
-    
-    // Returns the Player's moveSpeed
-    public float getEatingSpeed() {
-        return this.eatingSpeed;
-    }
-    
-    // Returns the Player's eating reputation
-    public int getEatingReputation() {
-        return this.eatingReputation;
-    }
-    
-    
-    // Returns the Player's camera
-    public FirstPersonCamera getCamera() {
-        return this.camera;
-    }
-    
-    // Returns the single instance of the Player class
-    public static Player getInstance() {
-        if (instance == null) {
-            instance = new Player();
-        }
-        
-        return instance;
-    }
-    
-    
-    // Setters
-    
-    // Sets the location of the Player
-    public void setLocation(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        
-        this.camera.getView().position.set(this.x, this.y, this.z);
-    }
-    
-    // Returns the coordinates that the Player is looking at currently
-    public float[] getLookingAt() {
-        return new float[] {this.camera.getView().direction.x, this.camera.getView().direction.y, this.camera.getView().direction.z};
-    }
-    
-    public void setEating(boolean eating) {
-        this.eating = eating;
-    }
-    
-    public void setCollisionDetection(boolean collisionDetection) {
-        this.collisionDetection = collisionDetection;
-    }
-   
-    
+    // Trigger the Player's bite sound effect
     public void bite() {
         this.biteSFX.play(0.2f);
     }
     
-    // UPDATABLES
-    
-    public void load(SceneManager sceneManager) {
-//        sceneManager.addScene(this.arms.body);
+    // Returns the number of  bonus bites (mouse clicks) in the past second and resets the value to 0
+    public int applyBonusBites() {
+        int bonusBites = this.bonusBites;                                                                                                                                                      // Store the number of bonus bites in a variable
+        this.bonusBites = 0;                                                                                                                                                                   // Reset the Player's count of bonusBites since these current bonus bites are being registered
+        return bonusBites;                                                                                                                                                                     // Return the number of bonus bites that the Player had before the reset
     }
     
-    // Executes every frame
-    @Override
+        // Executes every frame
     public void update(float dt) {
         this.camera.update(dt);                                                                                                                                                              // Updates the Player's camera
-        
-//        this.arms.update(dt);
-        
+                
         if (this.eating) {                                                                                                                                                                            // If the Player is currently eating...                                                                                                                                                                     
             this.eat();                                                                                                                                                                                   // Process the Player's eating
         }
@@ -213,9 +119,9 @@ public class Player implements Interactable, Updatable {
             // If the Player goes past any of these numbers, it will be set back to that number before the update completes (preventing movement past the barrier).
             // Collision Detection should be disabled when the Player is sat down because their movement is restricted
             
-            if (this.collisionDetection) {
-                // Wall 1 Barrier
-                if (this.x < -41) {
+            if (this.collisionDetection) {                                                                                                                                                           
+                // Wall 1 Barrier   
+                if (this.x < -41) {                             
                     this.x = -41;
                 }
                 // Wall 2 Barrier
@@ -236,13 +142,98 @@ public class Player implements Interactable, Updatable {
             this.setLocation(this.x, this.y, this.z);                                                                                                                                               // Set the Player's location to x, y, z    
         }
     }
+
     
-    // Executes every frame
+    // GETTER METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // Returns the Player's x-coordinate
+    public float getX() {
+        return this.x;
+    }
+    
+    // Returns the Player's y-coordinate
+    public float getY() {
+        return this.y;
+    }
+    
+    // Returns the Player's z-coordinate
+    public float getZ() {
+        return this.z;
+    }
+    
+    // Returns the Player's moveSpeed
+    public float getMoveSpeed() {
+        return this.moveSpeed;
+    }
+    
+    // Returns whether or not the Player is currently eating
+    public boolean getEating() {
+        return this.eating;
+    }
+    
+    // Returns the Player's moveSpeed
+    public float getEatingSpeed() {
+        return this.eatingSpeed;
+    }
+    
+    // Returns the Player's eating reputation
+    public int getEatingReputation() {
+        return this.eatingReputation;
+    }
+    
+    // Returns the Player's camera
+    public FirstPersonCamera getCamera() {
+        return this.camera;
+    }
+    
+    // Returns the coordinates that the Player is looking at currently
+    public float[] getLookingAt() {
+        return new float[] {this.camera.getView().direction.x, this.camera.getView().direction.y, this.camera.getView().direction.z};
+    }
+    
+    // Returns the single instance of the Player class
+    public static Player getInstance() {
+        if (instance == null) {
+            instance = new Player();
+        }
+        
+        return instance;
+    }
+    
+    
+    // SETTER METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    // Sets the location of the Player
+    public void setLocation(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        
+        this.camera.getView().position.set(this.x, this.y, this.z);
+    }
+    
+
+    
+    public void setEating(boolean eating) {
+        this.eating = eating;
+    }
+    
+    public void setCollisionDetection(boolean collisionDetection) {
+        this.collisionDetection = collisionDetection;
+    }
+   
+    // INTERACTABLE METHODS // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    // The Interactable interface did not end up being used quite as I anticipated. I figured I'd need code in both the Player and Booth, but having it just in the Booth seems to work fine.
     @Override
-    public void render() {
+    public void detectInteractions() {
         
     }
     
+    @Override
+    public void processInteraction(Interactable sender) {
+        
+    }
     
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

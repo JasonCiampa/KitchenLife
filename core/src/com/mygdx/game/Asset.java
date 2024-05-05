@@ -77,7 +77,7 @@ public class Asset {
         this.gltfFile.dispose();                                                                                                                                // Dispose of the Asset's gltf file
     }
     
-    // Setters
+    // SETTER METHODS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     // Sets the Asset's current animation
     public void setAnimation(String animationName, boolean loopAnimation) {
@@ -104,7 +104,7 @@ public class Asset {
     }
     
     
-    // Getters
+    // GETTER METHODS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     public Scene getBody() {
         return this.body;

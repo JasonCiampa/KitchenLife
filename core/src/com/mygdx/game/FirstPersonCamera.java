@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 
-
 /**
  *
  * @author Jason Ciampa
@@ -20,8 +19,8 @@ public class FirstPersonCamera extends FirstPersonCameraController {
     private float lookY;                                                                        // The y-coordinate that the FirstPersonCamera is looking at
     private float lookZ;                                                                        // The z-coordinate that the FirstPersonCamera is looking at    
     
-    // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
+    // CONSTRUCTOR // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     public FirstPersonCamera(int speed, float locationX, float locationY, float locationZ, Camera camera) {
         super(camera);                                                                          // Call the super constructor (FirstPersonCameraController)
@@ -63,7 +62,6 @@ public class FirstPersonCamera extends FirstPersonCameraController {
     
     
     
-    
     // METHODS // ------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     @Override
@@ -75,49 +73,6 @@ public class FirstPersonCamera extends FirstPersonCameraController {
         return this.view;
     }
     
-    // Returns an array of three floats representing how much distance was turned for each axis
-    public float[] getLookUpdates() {
-        float newLookX = this.view.direction.x;
-        float newLookY = this.view.direction.y;
-        float newLookZ = this.view.direction.z;
-        
-        // If facing the negative side of the x-axis and new update turns the camera to the right
-        if ((newLookX < 0) && newLookZ < 0) {
-            
-        }
-        // If facing the negative side of the x-axis and new update turns the camera to the left
-        else if ((newLookX < 0) && newLookZ > 0) {
-            
-        }
-        // If facing the positive side of the x-axis and new update turns the camera to the right
-        else if ((newLookX > 0) && newLookZ > 0) {
-            
-        }
-        // If facing the positive side of the x-axis and new update turns the camera to the left
-        else if ((newLookX > 0) && newLookZ < 0) {
-            
-        }
-        
-        // If facing the negative side of the z-axis and new update turns the camera to the right
-        if ((newLookZ < 0) && newLookX < 0) {
-            
-        }
-        // If facing the negative side of the z-axis and new update turns the camera to the left
-        else if ((newLookZ < 0) && newLookX > 0) {
-            
-        }
-        // If facing the positive side of the z-axis and new update turns the camera to the right
-        else if ((newLookZ > 0) && newLookX > 0) {
-            
-        }
-        // If facing the positive side of the z-axis and new update turns the camera to the left
-        else if ((newLookZ > 0) && newLookX < 0) {
-            
-        }
-        
-        
-        return new float[] {0.1f};
-    }
     
     // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

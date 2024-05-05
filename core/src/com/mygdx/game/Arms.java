@@ -8,6 +8,10 @@ import com.badlogic.gdx.math.Vector3;
  *
  * @author Jason Ciampa
  */
+
+
+// The Arms were unfortunately not able to be implemented. I struggled and fought, but Euler Angles and Quaternions fought harder.
+// Here is code that was pretty close to getting me there, but not quite
 public class Arms extends Asset {
     private float x;
     private float y;
@@ -37,15 +41,20 @@ public class Arms extends Asset {
     }
     
     public void rotate() {
-        Matrix4 orientationMatrix = new Matrix4().setToLookAt(Vector3.Zero, this.player.getCamera().getView().direction, this.player.getCamera().getView().up);;
+        // Get the current orientation of the Player Camera
+        Matrix4 orientationMatrix = new Matrix4().setToLookAt(Vector3.Zero, this.player.getCamera().getView().direction, this.player.getCamera().getView().up);
 
+        // Store the orientation of the Player Camera as a Quaternion
         Quaternion cameraAngle = new Quaternion();
         cameraAngle.setFromMatrix(orientationMatrix);
         
+        // Undo the current rotation of the model
         this.body.modelInstance.transform.rotate(this.rotation);     
         
+        // Set the new rotation of the model to be based on the euler angles of the Player's Camera
         this.rotation = cameraAngle.setEulerAngles(cameraAngle.getYaw(), cameraAngle.getPitch(), cameraAngle.getRoll());
         
+        // Rotate the model with the new rotation
         this.body.modelInstance.transform.rotate(this.rotation.cpy().conjugate());   
     }
     
